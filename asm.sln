@@ -1,9 +1,10 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "asm", "asm\asm.csproj", "{DEBAEAC7-511C-40E4-82AB-2DA7C0B48D2B}"
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29728.190
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Assembler", "asm\Assembler.csproj", "{DEBAEAC7-511C-40E4-82AB-2DA7C0B48D2B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicrocodeGen", "MicrocodeGen\MicrocodeGen.csproj", "{D938277A-208B-4447-ACA4-27EDAB5FBE95}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicrocodeGen", "MicrocodeGen\MicrocodeGen.csproj", "{D938277A-208B-4447-ACA4-27EDAB5FBE95}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,5 +20,11 @@ Global
 		{D938277A-208B-4447-ACA4-27EDAB5FBE95}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D938277A-208B-4447-ACA4-27EDAB5FBE95}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D938277A-208B-4447-ACA4-27EDAB5FBE95}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {ED19716F-4EA4-4D69-9845-159BC7181CD1}
 	EndGlobalSection
 EndGlobal

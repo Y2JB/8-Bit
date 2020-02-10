@@ -6,6 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\asm\asm.csproj" />
+    <ProjectReference Include="..\asm\Assembler.csproj" />
   </ItemGroup>
 </Project>
