@@ -10,14 +10,14 @@ namespace asm
     // 8 Bit Registers
     // 8 Bit Program Counter
     // 8 Bit Bus
-    // 4 Bit Op Codes
-    // 4 Bit LParam
+    // 5 Bit Op Codes
+    // 3 Bit LParam
     // 8 Bit R Param
     // The output ROM format is so:
-    // Op   Lparam
-    // XXXX XXXX
-    // .... ....
-    // XXXX XXXX
+    // Op    Lparam
+    // XXXXX XXX
+    // ..... ...
+    // XXXXX XXX
     // Rparam
     // XXXXXXXX
     // ........

@@ -8,8 +8,8 @@ namespace asm
         
         static void Main(string[] args)
         {
-            ///string fn = "/Users/jonbellamy/Google Drive/Electronics/8 Bit CPU/asm/Sample ASM/win.asm.txt";
-            string fn = "C:/Users/bellamj/Google Drive/Electronics/8 Bit CPU/asm/Sample ASM/win.asm.txt";
+            ///string fn = "/Users/jonbellamy/Google Drive/Electronics/8 Bit CPU/asm/Sample ASM/win.asm";
+            string fn = "C:/Users/bellamj/Google Drive/Electronics/8 Bit CPU/asm/Sample ASM/test.asm";
        // C: \Users\Jon\Google Drive\Electronics\8 Bit CPU\asm\Sample ASM
 
             bool optionOutputPreProcessedSource = true;

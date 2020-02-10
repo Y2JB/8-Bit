@@ -45,6 +45,7 @@ namespace MicrocodeGen
         private MemoryStream memStreamEeprom2;
         private MemoryStream memStreamEeprom3;
 
+        private int microInstructionCount;
 
         public MicroInstructions()
         {
@@ -54,9 +55,13 @@ namespace MicrocodeGen
             memStreamEeprom2 = new MemoryStream(32 * 1024);
             memStreamEeprom3 = new MemoryStream(32 * 1024);
 
+            Console.WriteLine("Generating Microcode");
             GenerateMicrocode();
+            Console.WriteLine("Validating Microcode");
             Validate();
             WriteRoms();
+
+            Console.WriteLine(String.Format("{0} micro instructions written.", microInstructionCount));
         }
 
 
@@ -64,6 +69,9 @@ namespace MicrocodeGen
         {
 
             // Any instruction that has a register parameter needs to generate it's own set of control words for each variant (A,B...)
+
+            // NOP
+            Microcode_NOP(Instruction.OpCode.NOP);
 
             // MOV 
             Microcode_MOV(Instruction.OpCode.MOV, InstructionParameter.Register.A);
@@ -102,7 +110,18 @@ namespace MicrocodeGen
 
             // HLT
             Microcode_HLT(Instruction.OpCode.HLT);
-        }    
+        }
+
+
+        private void Microcode_NOP(Instruction.OpCode opCode)
+        {
+            int step = GenerateFetchMicrocode(opCode, null);
+
+            UInt16 address = GenerateMicroInstructionAddress(opCode, null, step++);
+            UInt32 controlLines = 0;
+
+            WriteEepromBuffers(address, controlLines);
+        }
 
 
         private void Microcode_MOV(Instruction.OpCode opCode, InstructionParameter.Register reg)
@@ -271,7 +290,7 @@ namespace MicrocodeGen
 
 
         // The control lines that will be switched on are contained in the image at an address generated here
-        // We currently generate 11 bit addresses (though we have room for 15 bit addr) They are generated out of opCode Param microStep, with least significant bit on the right
+        // We currently generate 11 bit addresses (though we have room for 15 bit addr) They are generated out of 'opCode Param microStep', with least significant bit on the right
         // CCCCCPPPSSS
         private UInt16 GenerateMicroInstructionAddress(Instruction.OpCode opCode, Nullable<InstructionParameter.Register> reg, int microStep)
         {
@@ -312,6 +331,8 @@ namespace MicrocodeGen
             memStreamEeprom1.GetBuffer()[address] = b1;
             memStreamEeprom2.GetBuffer()[address] = b2;
             memStreamEeprom3.GetBuffer()[address] = b3;
+
+            microInstructionCount++;
         }
 
 
@@ -363,7 +384,25 @@ namespace MicrocodeGen
 
         private void WriteRoms()
         {
+            Console.Write("Writing Microcode ROMs...");
+            using (FileStream f0 = File.Create("Microcode-Bank0.bin"))
+            using (FileStream f1 = File.Create("Microcode-Bank1.bin"))
+            using (FileStream f2 = File.Create("Microcode-Bank2.bin"))
+            using (FileStream f3 = File.Create("Microcode-Bank3.bin"))
+            {
+                f0.Write(memStreamEeprom0.GetBuffer());
+                f0.Close();
 
+                f1.Write(memStreamEeprom1.GetBuffer());
+                f1.Close();
+
+                f2.Write(memStreamEeprom2.GetBuffer());
+                f2.Close();
+
+                f3.Write(memStreamEeprom3.GetBuffer());
+                f3.Close();
+            }
+            Console.WriteLine("success");
         }
     }
 }

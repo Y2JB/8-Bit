@@ -11,7 +11,7 @@ namespace asm
             NOP         = 0x00,         // Do nothing 
             MOV         = 0x01,         // MOV a value into a Register. MOV A 0xFF
             LDR         = 0x02,         // Load a register with a value from RAM. LDR A 0xA2
-            LDX         = 0x03,         // Load a register with a value from ROM. LDX A 0xA2
+            LDX         = 0x03,         // Load a register with a value from ROM. LDX A 7
             STR         = 0x04,         // Store register value in memory. STR B 0xF0
             ADD         = 0x05,         // Add B to A. ADD
             SUB         = 0x06,         // Sub B from A. SUB
