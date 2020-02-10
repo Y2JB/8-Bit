@@ -1,0 +1,23 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "asm", "asm\asm.csproj", "{DEBAEAC7-511C-40E4-82AB-2DA7C0B48D2B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicrocodeGen", "MicrocodeGen\MicrocodeGen.csproj", "{D938277A-208B-4447-ACA4-27EDAB5FBE95}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DEBAEAC7-511C-40E4-82AB-2DA7C0B48D2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEBAEAC7-511C-40E4-82AB-2DA7C0B48D2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEBAEAC7-511C-40E4-82AB-2DA7C0B48D2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEBAEAC7-511C-40E4-82AB-2DA7C0B48D2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D938277A-208B-4447-ACA4-27EDAB5FBE95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D938277A-208B-4447-ACA4-27EDAB5FBE95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D938277A-208B-4447-ACA4-27EDAB5FBE95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D938277A-208B-4447-ACA4-27EDAB5FBE95}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
