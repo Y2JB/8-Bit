@@ -95,6 +95,9 @@ namespace MicrocodeGen
             // SUB
             Microcode_SUB(Instruction.OpCode.SUB);
 
+            // CMP
+            //Microcode_CMP(Instruction.OpCode.CMP, InstructionParameter.Register.B);
+
             // JMP
             Microcode_JMP(Instruction.OpCode.JMP);
 
@@ -103,6 +106,21 @@ namespace MicrocodeGen
 
             // JNZ
             //Microcode_JNZ(Instruction.OpCode.JNZ);
+
+            // JE
+            //Microcode_JE(Instruction.OpCode.JE);
+
+            // JNE
+            //Microcode_JNE(Instruction.OpCode.JNE);
+
+            // CALL
+            //Microcode_CALL(Instruction.OpCode.CALL);
+
+            // RET
+            //Microcode_RET(Instruction.OpCode.RET);
+
+
+
 
             // OUT
             Microcode_OUT(Instruction.OpCode.OUT, InstructionParameter.Register.A);

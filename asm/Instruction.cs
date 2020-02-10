@@ -15,10 +15,14 @@ namespace asm
             STR         = 0x04,         // Store register value in memory. STR B 0xF0
             ADD         = 0x05,         // Add B to A. ADD
             SUB         = 0x06,         // Sub B from A. SUB
-            JMP         = 0x07,         // Jumps to address. JMP 0xF0
-            JZ          = 0x08,         // Jump if zero flag is set. JZ 0xF0
-            JNZ         = 0x09,         // Jump if zero flag is not set. JNZ 0x0F
-            OUT         = 0x0A,         // Sends the contents of the regsiter in the lparam to the output register - OUT A / OUT B
+            CMP         = 0x07,         // Compares two values and sets the EQ flag is they are the same (replaces contents of Reg A). CMP B
+            JMP         = 0x08,         // Jumps to address. JMP 0xF0            
+            JZ          = 0x09,         // Jump if zero flag is set. JZ 0xF0
+            JNZ         = 0x0A,         // Jump if zero flag is not set. JNZ 0x0F
+            JE          = 0x0B,         // Jump if the equal flag is set. JE loop:
+            CALL        = 0x0C,         // Pushes the return address into the ret register then jumps to the label. CALL foo:
+            RET         = 0x0D,         // Used to end a function. Loads the PC with the ret register contents. 
+            OUT         = 0x1E,         // Sends the contents of the regsiter in the lparam to the output register - OUT A / OUT B
             HLT         = 0x1F          // Halts the computer
         }
 
