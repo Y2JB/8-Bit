@@ -19,7 +19,7 @@ namespace asm
         public enum Register
         {
             A = 1,
-            B = 2
+            B = 2,
         }
 
         public ParamType Type {get; private set; }
