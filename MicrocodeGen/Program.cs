@@ -7,7 +7,6 @@ namespace MicrocodeGen
         static void Main(string[] args)
         {
             var micro = new MicroInstructions();
-            Console.WriteLine("Hello World!");
         }
     }
 }

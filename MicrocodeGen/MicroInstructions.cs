@@ -100,16 +100,13 @@ namespace MicrocodeGen
             Microcode_JMP();
 
             // JZ
-            //Microcode_JZ();
+            Microcode_JZ();
 
             // JNZ
-            //Microcode_JNZ();
+            Microcode_JNZ();
 
-            // JE
-            //Microcode_JE();
-
-            // JNE
-            //Microcode_JNE();
+            // JC
+            Microcode_JC();
 
             // CALL
             //Microcode_CALL();
@@ -294,13 +291,70 @@ namespace MicrocodeGen
 
         private void Microcode_JZ()
         {
-            throw new NotImplementedException();
+            Instruction.OpCode opCode = Instruction.OpCode.JZ;
+
+            for (byte flags = 0; flags <= maxFlagsValue; flags++)
+            {
+                int step = GenerateFetchMicrocode(opCode, null, flags);
+
+                UInt16 address = GenerateMicroInstructionAddress(opCode, null, flags, step++);
+
+                UInt32 controlLines = 0;
+
+                // Only jump if the right flag is set, ptherwise it's a NOP
+                if ((flags | (byte)Instruction.InstructionFlags.Zero) == 1)
+                {
+                    controlLines = (UInt32)(ControlLine.PC_IN) | (UInt32)(ControlLine.IR_PARAM_OUT);
+                }
+
+                WriteEepromBuffers(address, controlLines);
+            }
         }
 
 
         private void Microcode_JNZ()
         {
-            throw new NotImplementedException();
+            Instruction.OpCode opCode = Instruction.OpCode.JNZ;
+
+            for (byte flags = 0; flags <= maxFlagsValue; flags++)
+            {
+                int step = GenerateFetchMicrocode(opCode, null, flags);
+
+                UInt16 address = GenerateMicroInstructionAddress(opCode, null, flags, step++);
+
+                UInt32 controlLines = 0;
+
+                // Only jump if the right flag is set, ptherwise it's a NOP
+                if ((flags | (byte) Instruction.InstructionFlags.Zero) == 0)
+                {
+                    controlLines = (UInt32)(ControlLine.PC_IN) | (UInt32)(ControlLine.IR_PARAM_OUT);
+                }
+
+                WriteEepromBuffers(address, controlLines);
+            }
+        }
+
+
+        private void Microcode_JC()
+        {
+            Instruction.OpCode opCode = Instruction.OpCode.JC;
+
+            for (byte flags = 0; flags <= maxFlagsValue; flags++)
+            {
+                int step = GenerateFetchMicrocode(opCode, null, flags);
+
+                UInt16 address = GenerateMicroInstructionAddress(opCode, null, flags, step++);
+
+                UInt32 controlLines = 0;
+
+                // Only jump if the right flag is set, ptherwise it's a NOP
+                if ((flags | (byte)Instruction.InstructionFlags.Carry) == 1)
+                {
+                    controlLines = (UInt32)(ControlLine.PC_IN) | (UInt32)(ControlLine.IR_PARAM_OUT);
+                }
+
+                WriteEepromBuffers(address, controlLines);
+            }
         }
 
 
