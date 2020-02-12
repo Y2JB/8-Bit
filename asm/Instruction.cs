@@ -26,6 +26,12 @@ namespace asm
             HLT         = 0x1F          // Halts the computer
         }
 
+        public enum InstructionFlags
+        {
+            Zero        = 1 << 0,
+            Carry       = 1 << 1
+        }
+
 
         public OpCode _OpCode { get; set; }
 

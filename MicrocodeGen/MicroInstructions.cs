@@ -133,9 +133,9 @@ namespace MicrocodeGen
 
         private void Microcode_NOP(Instruction.OpCode opCode)
         {
-            int step = GenerateFetchMicrocode(opCode, null);
+            int step = GenerateFetchMicrocode(opCode, null, 0);
 
-            UInt16 address = GenerateMicroInstructionAddress(opCode, null, step++);
+            UInt16 address = GenerateMicroInstructionAddress(opCode, null, 0, step++);
             UInt32 controlLines = 0;
 
             WriteEepromBuffers(address, controlLines);
@@ -144,9 +144,9 @@ namespace MicrocodeGen
 
         private void Microcode_MOV(Instruction.OpCode opCode, InstructionParameter.Register reg)
         {
-            int step = GenerateFetchMicrocode(opCode, reg);
+            int step = GenerateFetchMicrocode(opCode, reg, 0);
             
-            UInt16 address = GenerateMicroInstructionAddress(opCode, reg, step++);
+            UInt16 address = GenerateMicroInstructionAddress(opCode, reg, 0, step++);
 
             UInt32 regIn = MapRegisterToControlLineIn(reg);
 
@@ -158,63 +158,63 @@ namespace MicrocodeGen
 
         private void Microcode_LDR(Instruction.OpCode opCode, InstructionParameter.Register reg)
         {
-            int step = GenerateFetchMicrocode(opCode, reg);
+            int step = GenerateFetchMicrocode(opCode, reg, 0);
 
             UInt32 controlLines = 0;
             UInt16 address = 0;
 
             controlLines = (UInt32)(ControlLine.IR_PARAM_OUT) | (UInt32)(ControlLine.MAR_IN);
-            address = GenerateMicroInstructionAddress(opCode, reg, step++);
+            address = GenerateMicroInstructionAddress(opCode, reg, 0, step++);
             WriteEepromBuffers(address, controlLines);
 
             UInt32 regIn = MapRegisterToControlLineIn(reg);
             controlLines = (UInt32)(ControlLine.RAM_OUT) | regIn;
-            address = GenerateMicroInstructionAddress(opCode, reg, step++);
+            address = GenerateMicroInstructionAddress(opCode, reg, 0, step++);
             WriteEepromBuffers(address, controlLines);        
         }
 
 
         private void Microcode_LDX(Instruction.OpCode opCode, InstructionParameter.Register reg)
         {
-            int step = GenerateFetchMicrocode(opCode, reg);
+            int step = GenerateFetchMicrocode(opCode, reg, 0);
 
             UInt32 controlLines = 0;
             UInt16 address = 0;
 
             controlLines = (UInt32)(ControlLine.IR_PARAM_OUT) | (UInt32)(ControlLine.MAR_IN);
-            address = GenerateMicroInstructionAddress(opCode, reg, step++);
+            address = GenerateMicroInstructionAddress(opCode, reg, 0, step++);
             WriteEepromBuffers(address, controlLines);
 
             UInt32 regIn = MapRegisterToControlLineIn(reg);
             controlLines = (UInt32)(ControlLine.ROM_OUT) | regIn;
-            address = GenerateMicroInstructionAddress(opCode, reg, step++);
+            address = GenerateMicroInstructionAddress(opCode, reg, 0, step++);
             WriteEepromBuffers(address, controlLines);
         }
 
 
         private void Microcode_STR(Instruction.OpCode opCode, InstructionParameter.Register reg)
         {
-            int step = GenerateFetchMicrocode(opCode, reg);
+            int step = GenerateFetchMicrocode(opCode, reg, 0);
 
             UInt32 controlLines = 0;
             UInt16 address = 0;
 
             controlLines = (UInt32)(ControlLine.IR_PARAM_OUT) | (UInt32)(ControlLine.MAR_IN);
-            address = GenerateMicroInstructionAddress(opCode, reg, step++);
+            address = GenerateMicroInstructionAddress(opCode, reg, 0, step++);
             WriteEepromBuffers(address, controlLines);
 
             UInt32 regOut = MapRegisterToControlLineOut(reg);
             controlLines = (UInt32)(ControlLine.RAM_IN) | regOut;
-            address = GenerateMicroInstructionAddress(opCode, reg, step++);
+            address = GenerateMicroInstructionAddress(opCode, reg, 0, step++);
             WriteEepromBuffers(address, controlLines);
         }
 
 
         private void Microcode_ADD(Instruction.OpCode opCode)
         {
-            int step = GenerateFetchMicrocode(opCode, null);
+            int step = GenerateFetchMicrocode(opCode, null, 0);
 
-            UInt16 address = GenerateMicroInstructionAddress(opCode, null, step++);
+            UInt16 address = GenerateMicroInstructionAddress(opCode, null, 0, step++);
 
             UInt32 controlLines = (UInt32)(ControlLine.SUM_OUT) | (UInt32)(ControlLine.A_REG_IN);
 
@@ -224,9 +224,9 @@ namespace MicrocodeGen
 
         private void Microcode_SUB(Instruction.OpCode opCode)
         {
-            int step = GenerateFetchMicrocode(opCode, null);
+            int step = GenerateFetchMicrocode(opCode, null, 0);
 
-            UInt16 address = GenerateMicroInstructionAddress(opCode, null, step++);
+            UInt16 address = GenerateMicroInstructionAddress(opCode, null, 0, step++);
 
             UInt32 controlLines = (UInt32)(ControlLine.SUM_OUT) | (UInt32)(ControlLine.A_REG_IN) | (UInt32)(ControlLine.SUBTRACT);
 
@@ -236,9 +236,9 @@ namespace MicrocodeGen
 
         private void Microcode_JMP(Instruction.OpCode opCode)
         {
-            int step = GenerateFetchMicrocode(opCode, null);
+            int step = GenerateFetchMicrocode(opCode, null, 0);
 
-            UInt16 address = GenerateMicroInstructionAddress(opCode, null, step++);
+            UInt16 address = GenerateMicroInstructionAddress(opCode, null, 0, step++);
 
             UInt32 controlLines = (UInt32)(ControlLine.PC_IN) | (UInt32)(ControlLine.IR_PARAM_OUT);
 
@@ -260,9 +260,9 @@ namespace MicrocodeGen
 
         private void Microcode_OUT(Instruction.OpCode opCode, InstructionParameter.Register reg)
         {
-            int step = GenerateFetchMicrocode(opCode, reg);
+            int step = GenerateFetchMicrocode(opCode, reg, 0);
 
-            UInt16 address = GenerateMicroInstructionAddress(opCode, reg, step++);
+            UInt16 address = GenerateMicroInstructionAddress(opCode, reg, 0, step++);
 
             UInt32 regOut = MapRegisterToControlLineOut(reg);
 
@@ -274,9 +274,9 @@ namespace MicrocodeGen
 
         private void Microcode_HLT(Instruction.OpCode opCode)
         {
-            int step = GenerateFetchMicrocode(opCode, null);
+            int step = GenerateFetchMicrocode(opCode, null, 0);
 
-            UInt16 address = GenerateMicroInstructionAddress(opCode, null, step++);
+            UInt16 address = GenerateMicroInstructionAddress(opCode, null, 0, step++);
 
             UInt32 controlLines = (UInt32)(ControlLine.HLT);
 
@@ -284,12 +284,12 @@ namespace MicrocodeGen
         }
 
 
-        private int GenerateFetchMicrocode(Instruction.OpCode opCode, Nullable<InstructionParameter.Register> reg)
+        private int GenerateFetchMicrocode(Instruction.OpCode opCode, Nullable<InstructionParameter.Register> reg, byte flags)
         {
             // Generate the address for the control word based on the Instruction and the current step
-            UInt16 addressStep0 = GenerateMicroInstructionAddress(opCode, reg, 0);
-            UInt16 addressStep1 = GenerateMicroInstructionAddress(opCode, reg, 1);
-            UInt16 addressStep2 = GenerateMicroInstructionAddress(opCode, reg, 2);
+            UInt16 addressStep0 = GenerateMicroInstructionAddress(opCode, reg, flags, 0);
+            UInt16 addressStep1 = GenerateMicroInstructionAddress(opCode, reg, flags, 1);
+            UInt16 addressStep2 = GenerateMicroInstructionAddress(opCode, reg, flags, 2);
 
             // The fetch steps are the same for every instruction. Note our code is stored in ROM not RAM
             // These steps fetch the next instruction and put it in the instruction register, then fetch the 8 bit parameter (which will be 0x00 is not used),
@@ -309,18 +309,24 @@ namespace MicrocodeGen
 
         // The control lines that will be switched on are contained in the image at an address generated here
         // We currently generate 11 bit addresses (though we have room for 15 bit addr) They are generated out of 'opCode Param microStep', with least significant bit on the right
-        // CCCCCPPPSSS
-        private UInt16 GenerateMicroInstructionAddress(Instruction.OpCode opCode, Nullable<InstructionParameter.Register> reg, int microStep)
+        // CCCCCPPPFFFFSSS
+        private UInt16 GenerateMicroInstructionAddress(Instruction.OpCode opCode, Nullable<InstructionParameter.Register> reg, byte flags, int microStep)
         {
+            // Flags are 4 bits
+            if(flags > 0x0F)
+            {
+                throw new Exception("Flags cannot exceed 4 bits");
+            }
+
             // Microstep is 3 bits
-            if (microStep > 7)
+            if (microStep > 0x07)
             {
                 throw new Exception("Microstep cannot exceed 3 bits");
             }
 
             UInt16 regValue = (UInt16) (reg.HasValue ? reg.Value : 0);
 
-            UInt16 address = (UInt16)(((UInt16)(opCode) << 6) | regValue << 3 | microStep);
+            UInt16 address = (UInt16)(((UInt16)(opCode) << 10) | regValue << 7 | flags << 4 | microStep);
 
             // Our Eeproms only have 15 address lines so we cannot address more than this
             if (address > 32767)
