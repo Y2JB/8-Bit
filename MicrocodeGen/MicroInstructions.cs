@@ -69,10 +69,11 @@ namespace MicrocodeGen
         private void GenerateMicrocode()
         {
 
-            // Any instruction that has a register parameter needs to generate it's own set of control words for each variant (A,B...)
+            // Any instruction generate a set of control words for every possible input param and cpu flags. It generates a LOT of microcode and
+            // can almost certainly be optimized. 
 
             // NOP
-            Microcode_NOP(Instruction.OpCode.NOP);
+            Microcode_NOP();
 
             // MOV
             Microcode_MOV();
@@ -124,14 +125,19 @@ namespace MicrocodeGen
         }
 
 
-        private void Microcode_NOP(Instruction.OpCode opCode)
+        private void Microcode_NOP()
         {
-            int step = GenerateFetchMicrocode(opCode, null, 0);
+            Instruction.OpCode opCode = Instruction.OpCode.NOP;
 
-            UInt16 address = GenerateMicroInstructionAddress(opCode, null, 0, step++);
-            UInt32 controlLines = 0;
+            for (byte flags = 0; flags <= maxFlagsValue; flags++)
+            {
+                int step = GenerateFetchMicrocode(opCode, null, flags);
 
-            WriteEepromBuffers(address, controlLines);
+                UInt16 address = GenerateMicroInstructionAddress(opCode, null, flags, step++);
+                UInt32 controlLines = 0;
+
+                WriteEepromBuffers(address, controlLines);
+            }
         }
 
 
