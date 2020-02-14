@@ -48,6 +48,8 @@ namespace MicrocodeGen
         private int microInstructionCount;
         private readonly int maxFlagsValue = 15;
 
+        private int mostSteps = 0;
+
         public MicroInstructions()
         {
             MaxStepCount = 5;
@@ -62,7 +64,7 @@ namespace MicrocodeGen
             Validate();
             WriteRoms();
 
-            Console.WriteLine(String.Format("{0} micro instructions written.", microInstructionCount));
+            Console.WriteLine(String.Format("{0} micro instructions written. Most steps {1}", microInstructionCount, mostSteps+1));
         }
 
 
@@ -230,7 +232,14 @@ namespace MicrocodeGen
                     WriteEepromBuffers(address, controlLines);
 
                     UInt32 regOut = MapRegisterToControlLineOut(reg);
+
                     controlLines = (UInt32)(ControlLine.RAM_IN) | regOut;
+                    address = GenerateMicroInstructionAddress(opCode, reg, flags, step++);
+                    WriteEepromBuffers(address, controlLines);
+
+                    // I worry that when we end RAM_IN, what if the bus output ends fractionally before the memory write signal is stopped?
+                    // Would this mean we get bad writes (probably all zero's)? I've added this step as a precaution to keep the bus active but turn off memory in
+                    controlLines = regOut;
                     address = GenerateMicroInstructionAddress(opCode, reg, flags, step++);
                     WriteEepromBuffers(address, controlLines);
                 }
@@ -399,10 +408,11 @@ namespace MicrocodeGen
 
         private int GenerateFetchMicrocode(Instruction.OpCode opCode, Nullable<InstructionParameter.Register> reg, byte flags)
         {
+            int step = 0;
             // Generate the address for the control word based on the Instruction and the current step
-            UInt16 addressStep0 = GenerateMicroInstructionAddress(opCode, reg, flags, 0);
-            UInt16 addressStep1 = GenerateMicroInstructionAddress(opCode, reg, flags, 1);
-            UInt16 addressStep2 = GenerateMicroInstructionAddress(opCode, reg, flags, 2);
+            UInt16 addressStep0 = GenerateMicroInstructionAddress(opCode, reg, flags, step++);
+            UInt16 addressStep1 = GenerateMicroInstructionAddress(opCode, reg, flags, step++);
+            UInt16 addressStep2 = GenerateMicroInstructionAddress(opCode, reg, flags, step++);
 
             // The fetch steps are the same for every instruction. Note our code is stored in ROM not RAM
             // These steps fetch the next instruction and put it in the instruction register, then fetch the 8 bit parameter (which will be 0x00 is not used),
@@ -415,8 +425,7 @@ namespace MicrocodeGen
             WriteEepromBuffers(addressStep1, fetchStep1);
             WriteEepromBuffers(addressStep2, fetchStep2);
 
-            int nextStep = 3;
-            return nextStep;
+            return step;
         }
 
 
@@ -446,6 +455,13 @@ namespace MicrocodeGen
             {
                 throw new Exception("Microstep address exceeds 15 bits");
             }
+
+            // Keep track of whichever instruction takes the most steps
+            if(microStep > mostSteps)
+            {
+                mostSteps = microStep;
+            }
+
             return address;
         }
 
