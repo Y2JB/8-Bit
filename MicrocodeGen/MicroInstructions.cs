@@ -17,25 +17,25 @@ namespace MicrocodeGen
             HLT             = 1 << 0,           // Halt the computer
             PC_IN           = 1 << 1,           // Program counter in (used to JMP). PC <- Bus
             PC_OUT          = 1 << 2,           // Program Counter -> Bus
-            PC_ENABLE       = 1 << 3,           // Program Counter will increment on next clock cycle
-            MAR_IN          = 1 << 4,           // Memory Address Register will latch in a new value from the bus on the next clock cycle
-            RAM_IN          = 1 << 5,           // RAM will store the value currently on the bus at the address pointed to by the MAR on next clock cycle
-            RAM_OUT         = 1 << 6,           // RAM will put the value at address [MAR] onto the bus. RAM[MAR] -> Bus
-            ROM_OUT         = 1 << 7,           // ROM will put the value at address [MAR] onto the bus. ROM[MAR] -> Bus
+            PC_ENABLE       = 1 << 3,           // Program Counter will increment on next clock cycle            
+            A_REG_IN        = 1 << 4,           // A <- Bus
+            A_REG_OUT       = 1 << 5,           // A -> Bus
+            SUM_OUT         = 1 << 6,           // ALU -> Bus (outputs the last ADD, SUB, MUL etc to the bus)                       
+            SUBTRACT        = 1 << 7,           // ALU output will be Subtract (instead of ADD)            
 // EEPROM 2
-            ROM_BANK_1      = 1 << 8,           // Sets base ROM memory address to 256. Used to read instruction param (IR_PARAM_OUT). Could also be used to read and write memory beyond 256 bytes
-            IR_IN           = 1 << 9,           // Instruction Register
-            IR_OUT          = 1 << 10,          // Instruction Register -> Bus
-            IR_PARAM_IN     = 1 << 11,          // Instruction Register 8 Bit Operand <- Bus
-            IR_PARAM_OUT    = 1 << 12,          // Instruction Register 8 Bit Operand ->Bbus
-            A_REG_IN        = 1 << 13,          // A <- Bus
-            A_REG_OUT       = 1 << 14,          // A -> Bus
-            B_REG_IN        = 1 << 15,          // B <- Bus
+            UPDATE_FLAGS    = 1 << 8,
+            B_REG_IN        = 1 << 9,           // B <- Bus
+            B_REG_OUT       = 1 << 10,           // B -> Bus
+            OUT_REG_IN      = 1 << 11,          // OUT <- Bus (new value will appear on LCD display)
+            IR_IN           = 1 << 12,          // Instruction Register
+            IR_PARAM_IN     = 1 << 13,          // Instruction Register 8 Bit Operand <- Bus
+            IR_PARAM_OUT    = 1 << 14,          // Instruction Register 8 Bit Operand -> Bus
+            MAR_IN          = 1 << 15,          // Memory Address Register will latch in a new value from the bus on the next clock cycle
 // EEPROM 3
-            B_REG_OUT       = 1 << 16,          // B -> Bus
-            OUT_REG_IN      = 1 << 17,          // OUT <- bus (new value will appear on LCD display)
-            SUM_OUT         = 1 << 18,          // ALU -> Bus (outputs the last ADD, SUB, MUL etc to the bus)                       
-            SUBTRACT        = 1 << 19,          // ALU output will be Subtract (instead of ADD)
+            RAM_IN          = 1 << 16,          // RAM will store the value currently on the bus at the address pointed to by the MAR on next clock cycle
+            RAM_OUT         = 1 << 17,          // RAM will put the value at address [MAR] onto the bus. RAM[MAR] -> Bus
+            ROM_OUT         = 1 << 18,          // ROM will put the value at address [MAR] onto the bus. ROM[MAR] -> Bus
+            ROM_BANK_1      = 1 << 19,          // Sets base ROM memory address to 256. Used to read instruction param (IR_PARAM_OUT). Could also be used to read and write memory beyond 256 bytes
         }
 
 
@@ -283,6 +283,8 @@ namespace MicrocodeGen
         {
             Instruction.OpCode opCode = Instruction.OpCode.CMP;
 
+            // NB: This instruction takes the maximum of 8 uops (micro instructions)!
+
             foreach (InstructionParameter.Register reg in Enum.GetValues(typeof(InstructionParameter.Register)))
             {
                 UInt32 regIn = MapRegisterToControlLineIn(reg);
@@ -299,7 +301,7 @@ namespace MicrocodeGen
                     WriteEepromBuffers(address, controlLines);
 
                     // Store B for later, backup in the IR Param (very cheeky)
-                    controlLines = (UInt32)(ControlLine.IR_PARAM_IN) | (UInt32)(ControlLine.B_REG_OUT);
+                    controlLines = (UInt32)(ControlLine.B_REG_OUT) | (UInt32)(ControlLine.IR_PARAM_IN);
                     address = GenerateMicroInstructionAddress(opCode, reg, flags, step++);
                     WriteEepromBuffers(address, controlLines);
 
@@ -308,25 +310,13 @@ namespace MicrocodeGen
                     address = GenerateMicroInstructionAddress(opCode, reg, flags, step++);
                     WriteEepromBuffers(address, controlLines);
 
-                    // Store A for later, backup in the MAR Param (stupidly cheeky)
-                    controlLines = (UInt32)(ControlLine.MAR_IN) | (UInt32)(ControlLine.A_REG_OUT);
-                    address = GenerateMicroInstructionAddress(opCode, reg, flags, step++);
-                    WriteEepromBuffers(address, controlLines);
-
-
                     // Subtract the compare values, and use the zero flag as an equal flag
                     address = GenerateMicroInstructionAddress(opCode, null, flags, step++);
-                    controlLines = (UInt32)(ControlLine.SUM_OUT) | (UInt32)(ControlLine.A_REG_IN) | (UInt32)(ControlLine.SUBTRACT);
+                    controlLines = (UInt32)(ControlLine.SUBTRACT) | (UInt32)(ControlLine.UPDATE_FLAGS);
                     WriteEepromBuffers(address, controlLines);
 
-                    // TODO STORE FLAGS
-
-                    // Restore A & B
+                    // Restore B
                     controlLines = (UInt32)(ControlLine.IR_PARAM_OUT) | (UInt32)(ControlLine.B_REG_IN);
-                    address = GenerateMicroInstructionAddress(opCode, reg, flags, step++);
-                    WriteEepromBuffers(address, controlLines);
-
-                    controlLines = (UInt32)(ControlLine.MAR_OUT) | (UInt32)(ControlLine.A_REG_IN);
                     address = GenerateMicroInstructionAddress(opCode, reg, flags, step++);
                     WriteEepromBuffers(address, controlLines);
                 }             
