@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 
+using EightBitSystem;
+
 namespace asm
 {
     public class InstructionParameter
@@ -14,12 +16,6 @@ namespace asm
             Unused,
             Reg,
             Int,
-        }
-
-        public enum Register
-        {
-            A = 1,
-            B = 2,
         }
 
         public ParamType Type {get; private set; }

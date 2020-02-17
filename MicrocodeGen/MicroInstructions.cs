@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-using asm;
+using EightBitSystem;
 
 
 namespace MicrocodeGen
@@ -126,7 +126,7 @@ namespace MicrocodeGen
 
         private void Microcode_NOP()
         {
-            Instruction.OpCode opCode = Instruction.OpCode.NOP;
+            OpCode opCode = OpCode.NOP;
 
             for (byte flags = 0; flags <= maxFlagsValue; flags++)
             {
@@ -142,9 +142,9 @@ namespace MicrocodeGen
 
         private void Microcode_MOV()
         {
-            Instruction.OpCode opCode = Instruction.OpCode.MOV;
+            OpCode opCode = OpCode.MOV;
 
-            foreach (InstructionParameter.Register reg in Enum.GetValues(typeof(InstructionParameter.Register)))
+            foreach (Register reg in Enum.GetValues(typeof(Register)))
             {
                 for (byte flags = 0; flags <= maxFlagsValue; flags++)
                 {
@@ -164,9 +164,9 @@ namespace MicrocodeGen
 
         private void Microcode_LDR()
         {
-            Instruction.OpCode opCode = Instruction.OpCode.LDR;
+            OpCode opCode = OpCode.LDR;
 
-            foreach (InstructionParameter.Register reg in Enum.GetValues(typeof(InstructionParameter.Register)))
+            foreach (Register reg in Enum.GetValues(typeof(Register)))
             {
                 for (byte flags = 0; flags <= maxFlagsValue; flags++)
                 {
@@ -190,9 +190,9 @@ namespace MicrocodeGen
 
         private void Microcode_LDX()
         {
-            Instruction.OpCode opCode = Instruction.OpCode.LDX;
+            OpCode opCode = OpCode.LDX;
 
-            foreach (InstructionParameter.Register reg in Enum.GetValues(typeof(InstructionParameter.Register)))
+            foreach (Register reg in Enum.GetValues(typeof(Register)))
             {
                 for (byte flags = 0; flags <= maxFlagsValue; flags++)
                 {
@@ -216,9 +216,9 @@ namespace MicrocodeGen
 
         private void Microcode_STR()
         {
-            Instruction.OpCode opCode = Instruction.OpCode.STR;
+            OpCode opCode = OpCode.STR;
 
-            foreach (InstructionParameter.Register reg in Enum.GetValues(typeof(InstructionParameter.Register)))
+            foreach (Register reg in Enum.GetValues(typeof(Register)))
             {
                 for (byte flags = 0; flags <= maxFlagsValue; flags++)
                 {
@@ -249,7 +249,7 @@ namespace MicrocodeGen
 
         private void Microcode_ADD()
         {
-            Instruction.OpCode opCode = Instruction.OpCode.ADD;
+            OpCode opCode = OpCode.ADD;
 
             for (byte flags = 0; flags <= maxFlagsValue; flags++)
             {
@@ -266,7 +266,7 @@ namespace MicrocodeGen
 
         private void Microcode_SUB()
         {
-            Instruction.OpCode opCode = Instruction.OpCode.SUB;
+            OpCode opCode = OpCode.SUB;
 
             for (byte flags = 0; flags <= maxFlagsValue; flags++)
             {
@@ -281,11 +281,11 @@ namespace MicrocodeGen
 
         private void Microcode_CMP()
         {
-            Instruction.OpCode opCode = Instruction.OpCode.CMP;
+            OpCode opCode = OpCode.CMP;
 
             // NB: This instruction takes the maximum of 8 uops (micro instructions)!
 
-            foreach (InstructionParameter.Register reg in Enum.GetValues(typeof(InstructionParameter.Register)))
+            foreach (Register reg in Enum.GetValues(typeof(Register)))
             {
                 UInt32 regIn = MapRegisterToControlLineIn(reg);
 
@@ -326,7 +326,7 @@ namespace MicrocodeGen
 
         private void Microcode_JMP()
         {
-            Instruction.OpCode opCode = Instruction.OpCode.JMP;
+            OpCode opCode = OpCode.JMP;
 
             for (byte flags = 0; flags <= maxFlagsValue; flags++)
             {
@@ -343,7 +343,7 @@ namespace MicrocodeGen
 
         private void Microcode_JZ()
         {
-            Instruction.OpCode opCode = Instruction.OpCode.JZ;
+            OpCode opCode = OpCode.JZ;
 
             for (byte flags = 0; flags <= maxFlagsValue; flags++)
             {
@@ -354,7 +354,7 @@ namespace MicrocodeGen
                 UInt32 controlLines = 0;
 
                 // Only jump if the right flag is set, ptherwise it's a NOP
-                if ((flags | (byte)Instruction.InstructionFlags.Zero) == 1)
+                if ((flags | (byte)InstructionFlags.Zero) == 1)
                 {
                     controlLines = (UInt32)(ControlLine.PC_IN) | (UInt32)(ControlLine.IR_PARAM_OUT);
                 }
@@ -366,7 +366,7 @@ namespace MicrocodeGen
 
         private void Microcode_JNZ()
         {
-            Instruction.OpCode opCode = Instruction.OpCode.JNZ;
+            OpCode opCode = OpCode.JNZ;
 
             for (byte flags = 0; flags <= maxFlagsValue; flags++)
             {
@@ -377,7 +377,7 @@ namespace MicrocodeGen
                 UInt32 controlLines = 0;
 
                 // Only jump if the right flag is set, ptherwise it's a NOP
-                if ((flags | (byte) Instruction.InstructionFlags.Zero) == 0)
+                if ((flags | (byte) InstructionFlags.Zero) == 0)
                 {
                     controlLines = (UInt32)(ControlLine.PC_IN) | (UInt32)(ControlLine.IR_PARAM_OUT);
                 }
@@ -389,7 +389,7 @@ namespace MicrocodeGen
 
         private void Microcode_JC()
         {
-            Instruction.OpCode opCode = Instruction.OpCode.JC;
+            OpCode opCode = OpCode.JC;
 
             for (byte flags = 0; flags <= maxFlagsValue; flags++)
             {
@@ -400,7 +400,7 @@ namespace MicrocodeGen
                 UInt32 controlLines = 0;
 
                 // Only jump if the right flag is set, ptherwise it's a NOP
-                if ((flags | (byte)Instruction.InstructionFlags.Carry) == 1)
+                if ((flags | (byte)InstructionFlags.Carry) == 1)
                 {
                     controlLines = (UInt32)(ControlLine.PC_IN) | (UInt32)(ControlLine.IR_PARAM_OUT);
                 }
@@ -412,9 +412,9 @@ namespace MicrocodeGen
 
         private void Microcode_OUT()
         {
-            Instruction.OpCode opCode = Instruction.OpCode.OUT;
+            OpCode opCode = OpCode.OUT;
 
-            foreach (InstructionParameter.Register reg in Enum.GetValues(typeof(InstructionParameter.Register)))
+            foreach (Register reg in Enum.GetValues(typeof(Register)))
             {
                 for (byte flags = 0; flags <= maxFlagsValue; flags++)
                 {
@@ -434,7 +434,7 @@ namespace MicrocodeGen
 
         private void Microcode_HLT()
         {
-            Instruction.OpCode opCode = Instruction.OpCode.HLT;
+            OpCode opCode = OpCode.HLT;
 
             for (byte flags = 0; flags <= maxFlagsValue; flags++)
             {
@@ -449,7 +449,7 @@ namespace MicrocodeGen
         }
 
 
-        private int GenerateFetchMicrocode(Instruction.OpCode opCode, Nullable<InstructionParameter.Register> reg, byte flags)
+        private int GenerateFetchMicrocode(OpCode opCode, Nullable<Register> reg, byte flags)
         {
             int step = 0;
             // Generate the address for the control word based on the Instruction and the current step
@@ -475,7 +475,7 @@ namespace MicrocodeGen
         // The control lines that will be switched on are contained in the image at an address generated here
         // We currently generate 11 bit addresses (though we have room for 15 bit addr) They are generated out of 'opCode Param microStep', with least significant bit on the right
         // CCCCCPPPFFFFSSS
-        private UInt16 GenerateMicroInstructionAddress(Instruction.OpCode opCode, Nullable<InstructionParameter.Register> reg, byte flags, int microStep)
+        private UInt16 GenerateMicroInstructionAddress(OpCode opCode, Nullable<Register> reg, byte flags, int microStep)
         {
             // Flags are 4 bits
             if(flags > 0x0F)
@@ -533,15 +533,15 @@ namespace MicrocodeGen
 
 
         // Used to map which control line we turn on to read into a register
-        UInt32 MapRegisterToControlLineIn(InstructionParameter.Register reg)
+        UInt32 MapRegisterToControlLineIn(Register reg)
         {
             switch(reg)
             {
-                case InstructionParameter.Register.A:
+                case Register.A:
                     return (UInt32) ControlLine.A_REG_IN;
                    
 
-                case InstructionParameter.Register.B:
+                case Register.B:
                     return (UInt32)ControlLine.B_REG_IN;
 
                 default:
@@ -552,15 +552,15 @@ namespace MicrocodeGen
 
 
         // Used to map which control line we turn on to output to a register
-        UInt32 MapRegisterToControlLineOut(InstructionParameter.Register reg)
+        UInt32 MapRegisterToControlLineOut(Register reg)
         {
             switch (reg)
             {
-                case InstructionParameter.Register.A:
+                case Register.A:
                     return (UInt32)ControlLine.A_REG_OUT;
 
 
-                case InstructionParameter.Register.B:
+                case Register.B:
                     return (UInt32)ControlLine.B_REG_OUT;
 
                 default:

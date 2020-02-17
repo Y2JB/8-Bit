@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 
+using EightBitSystem;
 
 namespace asm
 {
@@ -138,6 +139,7 @@ namespace asm
             }
         }
 
+
         private void OutputRomToConsole(MemoryStream memStream)
         {
             Console.WriteLine("Logical ROM contents");
@@ -226,6 +228,7 @@ namespace asm
 
             return preProcessedSourceWithLabelJumps;
         }
+
 
         private string RemoveComments(string str, string delimiter)
         {

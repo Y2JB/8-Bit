@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 
+using EightBitSystem;
+
 namespace asm
 {
     class Statement
@@ -14,6 +16,7 @@ namespace asm
         public string SourceAsm { get; private set; }
 
         public int ParameterCount { get { int count = 0; if (LeftParam.Type != InstructionParameter.ParamType.Unused) count++; if (RightParam.Type != InstructionParameter.ParamType.Unused) count++; return count; } }
+
 
         public Statement(int lineNumber, string sourceAsm)
         {
@@ -43,9 +46,9 @@ namespace asm
 
             // Bit of a hack for jump instructions
             // JMP has one param but the parm has to be forced into the 8 bit rparam
-            if (instruction._OpCode == Instruction.OpCode.JMP ||
-                instruction._OpCode == Instruction.OpCode.JZ ||
-                instruction._OpCode == Instruction.OpCode.JNZ)
+            if (instruction._OpCode == OpCode.JMP ||
+                instruction._OpCode == OpCode.JZ ||
+                instruction._OpCode == OpCode.JNZ)
             {
                 rParam = lParam;
                 lParam = null;
@@ -74,14 +77,14 @@ namespace asm
 
             switch (instruction._OpCode)
             {
-                case Instruction.OpCode.OUT:
+                case OpCode.OUT:
                     if(ParameterCount != 1)
                     {
                         throw new Exception(String.Format("ERROR: Line {0} : Too many parameters on OUT instruction", LineNumber));
                     }
                     break;
 
-                case Instruction.OpCode.MOV:
+                case OpCode.MOV:
                     if (ParameterCount != 2)
                     {
                         throw new Exception(String.Format("ERROR: Line {0} : Not enough parameters for MOV instruction", LineNumber));
@@ -96,7 +99,7 @@ namespace asm
                     }
                     break;
 
-                case Instruction.OpCode.CMP:
+                case OpCode.CMP:
                     if (ParameterCount != 1)
                     {
                         throw new Exception(String.Format("ERROR: Line {0} : CMP Invalud number of parameters. CMP usage - CMP 0xF0", LineNumber));
@@ -107,25 +110,25 @@ namespace asm
                     }
                     break;
 
-                case Instruction.OpCode.JMP:
-                case Instruction.OpCode.JZ:
-                case Instruction.OpCode.JNZ:
-                //case Instruction.OpCode.JE:
-                //case Instruction.OpCode.JNE:
+                case OpCode.JMP:
+                case OpCode.JZ:
+                case OpCode.JNZ:
+                //case OpCode.JE:
+                //case OpCode.JNE:
                     if (LeftParam.Type != InstructionParameter.ParamType.Unused || RightParam.Type != InstructionParameter.ParamType.Int)
                     {
                         throw new Exception(String.Format("ERROR: Line {0} : JMP, JZ, JNZ, JE & JNE must have one (R) parameter and it must be a valid address", LineNumber));
                     }
                     break;
 
-                case Instruction.OpCode.LDR:
+                case OpCode.LDR:
                     if (LeftParam.Type != InstructionParameter.ParamType.Reg || RightParam.Type != InstructionParameter.ParamType.Int)
                     {
                         throw new Exception(String.Format("ERROR: Line {0} : LDR requires REG INT", LineNumber));
                     }
                     break;
 
-                case Instruction.OpCode.STR:
+                case OpCode.STR:
                     if (LeftParam.Type != InstructionParameter.ParamType.Reg || RightParam.Type != InstructionParameter.ParamType.Int)
                     {
                         throw new Exception(String.Format("ERROR: Line {0} : STR requires REG INT", LineNumber));
