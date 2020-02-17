@@ -96,7 +96,7 @@ namespace MicrocodeGen
             Microcode_SUB();
 
             // CMP
-            //Microcode_CMP();
+            Microcode_CMP();
 
             // JMP
             Microcode_JMP();
@@ -273,10 +273,63 @@ namespace MicrocodeGen
                 int step = GenerateFetchMicrocode(opCode, null, flags);
 
                 UInt16 address = GenerateMicroInstructionAddress(opCode, null, flags, step++);
-
                 UInt32 controlLines = (UInt32)(ControlLine.SUM_OUT) | (UInt32)(ControlLine.A_REG_IN) | (UInt32)(ControlLine.SUBTRACT);
-
                 WriteEepromBuffers(address, controlLines);
+            }
+        }
+
+
+        private void Microcode_CMP()
+        {
+            Instruction.OpCode opCode = Instruction.OpCode.CMP;
+
+            foreach (InstructionParameter.Register reg in Enum.GetValues(typeof(InstructionParameter.Register)))
+            {
+                UInt32 regIn = MapRegisterToControlLineIn(reg);
+
+                for (byte flags = 0; flags <= maxFlagsValue; flags++)
+                {
+                    int step = GenerateFetchMicrocode(opCode, reg, flags);
+
+                    UInt32 controlLines = 0;
+                    UInt16 address = 0;
+
+                    controlLines = (UInt32)(ControlLine.IR_PARAM_OUT) | (UInt32)(ControlLine.MAR_IN);
+                    address = GenerateMicroInstructionAddress(opCode, reg, flags, step++);
+                    WriteEepromBuffers(address, controlLines);
+
+                    // Store B for later, backup in the IR Param (very cheeky)
+                    controlLines = (UInt32)(ControlLine.IR_PARAM_IN) | (UInt32)(ControlLine.B_REG_OUT);
+                    address = GenerateMicroInstructionAddress(opCode, reg, flags, step++);
+                    WriteEepromBuffers(address, controlLines);
+
+                    // Fetch the value to be compared
+                    controlLines = (UInt32)(ControlLine.RAM_OUT) | (UInt32)(ControlLine.B_REG_IN);
+                    address = GenerateMicroInstructionAddress(opCode, reg, flags, step++);
+                    WriteEepromBuffers(address, controlLines);
+
+                    // Store A for later, backup in the MAR Param (stupidly cheeky)
+                    controlLines = (UInt32)(ControlLine.MAR_IN) | (UInt32)(ControlLine.A_REG_OUT);
+                    address = GenerateMicroInstructionAddress(opCode, reg, flags, step++);
+                    WriteEepromBuffers(address, controlLines);
+
+
+                    // Subtract the compare values, and use the zero flag as an equal flag
+                    address = GenerateMicroInstructionAddress(opCode, null, flags, step++);
+                    controlLines = (UInt32)(ControlLine.SUM_OUT) | (UInt32)(ControlLine.A_REG_IN) | (UInt32)(ControlLine.SUBTRACT);
+                    WriteEepromBuffers(address, controlLines);
+
+                    // TODO STORE FLAGS
+
+                    // Restore A & B
+                    controlLines = (UInt32)(ControlLine.IR_PARAM_OUT) | (UInt32)(ControlLine.B_REG_IN);
+                    address = GenerateMicroInstructionAddress(opCode, reg, flags, step++);
+                    WriteEepromBuffers(address, controlLines);
+
+                    controlLines = (UInt32)(ControlLine.MAR_OUT) | (UInt32)(ControlLine.A_REG_IN);
+                    address = GenerateMicroInstructionAddress(opCode, reg, flags, step++);
+                    WriteEepromBuffers(address, controlLines);
+                }             
             }
         }
 

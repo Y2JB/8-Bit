@@ -95,13 +95,26 @@ namespace asm
                         throw new Exception(String.Format("ERROR: Line {0} : MOV literal must have a Number for Param 2", LineNumber));
                     }
                     break;
-             
+
+                case Instruction.OpCode.CMP:
+                    if (ParameterCount != 1)
+                    {
+                        throw new Exception(String.Format("ERROR: Line {0} : CMP Invalud number of parameters. CMP usage - CMP 0xF0", LineNumber));
+                    }
+                    if (RightParam.Type != InstructionParameter.ParamType.Int)
+                    {
+                        throw new Exception(String.Format("ERROR: Line {0} : CMP must have a Memory Address for Param 1", LineNumber));
+                    }
+                    break;
+
                 case Instruction.OpCode.JMP:
                 case Instruction.OpCode.JZ:
                 case Instruction.OpCode.JNZ:
+                //case Instruction.OpCode.JE:
+                //case Instruction.OpCode.JNE:
                     if (LeftParam.Type != InstructionParameter.ParamType.Unused || RightParam.Type != InstructionParameter.ParamType.Int)
                     {
-                        throw new Exception(String.Format("ERROR: Line {0} : JMP, JZ & JNZ must have one (R) parameter and it must be a valid address", LineNumber));
+                        throw new Exception(String.Format("ERROR: Line {0} : JMP, JZ, JNZ, JE & JNE must have one (R) parameter and it must be a valid address", LineNumber));
                     }
                     break;
 

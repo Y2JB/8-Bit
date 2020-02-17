@@ -15,10 +15,12 @@ namespace asm
             STR         = 0x04,         // Store register value in memory. STR B 0xF0
             ADD         = 0x05,         // Add B to A. ADD
             SUB         = 0x06,         // Sub B from A. SUB
-            //CMP         = 0x07,         // Compares two values and sets the EQ flag is they are the same (replaces contents of Reg A). CMP B
-            JMP         = 0x08,         // Jumps to address. JMP 0xF0            
+            CMP         = 0x07,         // Compares the value of the A register with a location in memory, sets the Zero flag if they are the same. Does not disturb any registers
+            JMP         = 0x08,         // Unconditionally jumps to address. JMP 0xF0            
             JZ          = 0x09,         // Jump if zero flag is set. JZ 0xF0
+            JE          = 0x09,         // Maps to the same microcode as JZ but is symantically different (used with CMP). CMP B 0x11 JE foo:
             JNZ         = 0x0A,         // Jump if zero flag is not set. JNZ 0x0F
+            JNE          = 0x0A,        // Maps to the same microcode as JNZ but is symantically different (used with CMP)
             JC          = 0x0B,         // Jump if the carry bit is set. JC 0x01
             //CALL        = 0x0C,         // Pushes the return address into the ret register then jumps to the label. CALL foo:
             //RET         = 0x0D,         // Used to end a function. Loads the PC with the ret register contents. 
