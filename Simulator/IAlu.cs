@@ -3,7 +3,7 @@
 namespace Simulator
 {
 
-    public interface IAlu
+    public interface IAlu : IBusConnectedComponent
     {
         // Add / Sub A to/from B
         int Add();

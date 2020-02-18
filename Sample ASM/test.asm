@@ -2,11 +2,11 @@
 MOV A 0
 STR A 0x00
 
-MOV B 10
+MOV B 0x2F
 STR B 0x01
 
 
-// Count to 10
+// Count to 47
 loop:
 
 // Add 1 to A, store the result in memory and output the current value

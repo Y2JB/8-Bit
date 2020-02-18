@@ -1,11 +1,17 @@
-﻿using System;
+﻿using EightBitSystem;
+using System;
 
 namespace Simulator
 {
     public abstract class IControlLine
     {
-        Component ConnectionA { get; }
-        Component ConnectionB { get; }
+        ControlLineId Id { get; }
+
+        string Name { get; }
+
+        IBusConnectedComponent ConnectionA { get; }
+        IBusConnectedComponent ConnectionB { get; }
+        
         bool State { get; }
     }
 }

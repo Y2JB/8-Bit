@@ -8,37 +8,6 @@ namespace MicrocodeGen
 {
     public class MicroInstructions
     {
-        // A single Microinstruction is turns on one or more of these control lines. There are some caveats to remember, namely that you cannot have two
-        // things outputting to the bus at the same time (although two things reading is fine)
-        // Each EEPROM can only output 8 bits at one time so we have to use a new EEPROM for each 8 control lines
-        private enum ControlLine
-        {
-// EEPROM 1
-            HLT             = 1 << 0,           // Halt the computer
-            PC_IN           = 1 << 1,           // Program counter in (used to JMP). PC <- Bus
-            PC_OUT          = 1 << 2,           // Program Counter -> Bus
-            PC_ENABLE       = 1 << 3,           // Program Counter will increment on next clock cycle            
-            A_REG_IN        = 1 << 4,           // A <- Bus
-            A_REG_OUT       = 1 << 5,           // A -> Bus
-            SUM_OUT         = 1 << 6,           // ALU -> Bus (outputs the last ADD, SUB, MUL etc to the bus)                       
-            SUBTRACT        = 1 << 7,           // ALU output will be Subtract (instead of ADD)            
-// EEPROM 2
-            UPDATE_FLAGS    = 1 << 8,
-            B_REG_IN        = 1 << 9,           // B <- Bus
-            B_REG_OUT       = 1 << 10,           // B -> Bus
-            OUT_REG_IN      = 1 << 11,          // OUT <- Bus (new value will appear on LCD display)
-            IR_IN           = 1 << 12,          // Instruction Register
-            IR_PARAM_IN     = 1 << 13,          // Instruction Register 8 Bit Operand <- Bus
-            IR_PARAM_OUT    = 1 << 14,          // Instruction Register 8 Bit Operand -> Bus
-            MAR_IN          = 1 << 15,          // Memory Address Register will latch in a new value from the bus on the next clock cycle
-// EEPROM 3
-            RAM_IN          = 1 << 16,          // RAM will store the value currently on the bus at the address pointed to by the MAR on next clock cycle
-            RAM_OUT         = 1 << 17,          // RAM will put the value at address [MAR] onto the bus. RAM[MAR] -> Bus
-            ROM_OUT         = 1 << 18,          // ROM will put the value at address [MAR] onto the bus. ROM[MAR] -> Bus
-            ROM_BANK_1      = 1 << 19,          // Sets base ROM memory address to 256. Used to read instruction param (IR_PARAM_OUT). Could also be used to read and write memory beyond 256 bytes
-        }
-
-
         public int MaxStepCount { get; private set; }
         private MemoryStream memStreamEeprom0;
         private MemoryStream memStreamEeprom1;
@@ -154,7 +123,7 @@ namespace MicrocodeGen
 
                     UInt32 regIn = MapRegisterToControlLineIn(reg);
 
-                    UInt32 controlLines = (UInt32)(ControlLine.IR_PARAM_OUT) | regIn;
+                    UInt32 controlLines = (UInt32)(ControlLineId.IR_PARAM_OUT) | regIn;
 
                     WriteEepromBuffers(address, controlLines);
                 }
@@ -175,12 +144,12 @@ namespace MicrocodeGen
                     UInt32 controlLines = 0;
                     UInt16 address = 0;
 
-                    controlLines = (UInt32)(ControlLine.IR_PARAM_OUT) | (UInt32)(ControlLine.MAR_IN);
+                    controlLines = (UInt32)(ControlLineId.IR_PARAM_OUT) | (UInt32)(ControlLineId.MAR_IN);
                     address = GenerateMicroInstructionAddress(opCode, reg, flags, step++);
                     WriteEepromBuffers(address, controlLines);
 
                     UInt32 regIn = MapRegisterToControlLineIn(reg);
-                    controlLines = (UInt32)(ControlLine.RAM_OUT) | regIn;
+                    controlLines = (UInt32)(ControlLineId.RAM_OUT) | regIn;
                     address = GenerateMicroInstructionAddress(opCode, reg, flags, step++);
                     WriteEepromBuffers(address, controlLines);
                 }
@@ -201,12 +170,12 @@ namespace MicrocodeGen
                     UInt32 controlLines = 0;
                     UInt16 address = 0;
 
-                    controlLines = (UInt32)(ControlLine.IR_PARAM_OUT) | (UInt32)(ControlLine.MAR_IN);
+                    controlLines = (UInt32)(ControlLineId.IR_PARAM_OUT) | (UInt32)(ControlLineId.MAR_IN);
                     address = GenerateMicroInstructionAddress(opCode, reg, flags, step++);
                     WriteEepromBuffers(address, controlLines);
 
                     UInt32 regIn = MapRegisterToControlLineIn(reg);
-                    controlLines = (UInt32)(ControlLine.ROM_OUT) | regIn;
+                    controlLines = (UInt32)(ControlLineId.ROM_OUT) | regIn;
                     address = GenerateMicroInstructionAddress(opCode, reg, flags, step++);
                     WriteEepromBuffers(address, controlLines);
                 }
@@ -227,13 +196,13 @@ namespace MicrocodeGen
                     UInt32 controlLines = 0;
                     UInt16 address = 0;
 
-                    controlLines = (UInt32)(ControlLine.IR_PARAM_OUT) | (UInt32)(ControlLine.MAR_IN);
+                    controlLines = (UInt32)(ControlLineId.IR_PARAM_OUT) | (UInt32)(ControlLineId.MAR_IN);
                     address = GenerateMicroInstructionAddress(opCode, reg, flags, step++);
                     WriteEepromBuffers(address, controlLines);
 
                     UInt32 regOut = MapRegisterToControlLineOut(reg);
 
-                    controlLines = (UInt32)(ControlLine.RAM_IN) | regOut;
+                    controlLines = (UInt32)(ControlLineId.RAM_IN) | regOut;
                     address = GenerateMicroInstructionAddress(opCode, reg, flags, step++);
                     WriteEepromBuffers(address, controlLines);
 
@@ -257,7 +226,7 @@ namespace MicrocodeGen
 
                 UInt16 address = GenerateMicroInstructionAddress(opCode, null, flags, step++);
 
-                UInt32 controlLines = (UInt32)(ControlLine.SUM_OUT) | (UInt32)(ControlLine.A_REG_IN);
+                UInt32 controlLines = (UInt32)(ControlLineId.SUM_OUT) | (UInt32)(ControlLineId.A_REG_IN);
 
                 WriteEepromBuffers(address, controlLines);
             }           
@@ -273,7 +242,7 @@ namespace MicrocodeGen
                 int step = GenerateFetchMicrocode(opCode, null, flags);
 
                 UInt16 address = GenerateMicroInstructionAddress(opCode, null, flags, step++);
-                UInt32 controlLines = (UInt32)(ControlLine.SUM_OUT) | (UInt32)(ControlLine.A_REG_IN) | (UInt32)(ControlLine.SUBTRACT);
+                UInt32 controlLines = (UInt32)(ControlLineId.SUM_OUT) | (UInt32)(ControlLineId.A_REG_IN) | (UInt32)(ControlLineId.SUBTRACT);
                 WriteEepromBuffers(address, controlLines);
             }
         }
@@ -296,27 +265,27 @@ namespace MicrocodeGen
                     UInt32 controlLines = 0;
                     UInt16 address = 0;
 
-                    controlLines = (UInt32)(ControlLine.IR_PARAM_OUT) | (UInt32)(ControlLine.MAR_IN);
+                    controlLines = (UInt32)(ControlLineId.IR_PARAM_OUT) | (UInt32)(ControlLineId.MAR_IN);
                     address = GenerateMicroInstructionAddress(opCode, reg, flags, step++);
                     WriteEepromBuffers(address, controlLines);
 
                     // Store B for later, backup in the IR Param (very cheeky)
-                    controlLines = (UInt32)(ControlLine.B_REG_OUT) | (UInt32)(ControlLine.IR_PARAM_IN);
+                    controlLines = (UInt32)(ControlLineId.B_REG_OUT) | (UInt32)(ControlLineId.IR_PARAM_IN);
                     address = GenerateMicroInstructionAddress(opCode, reg, flags, step++);
                     WriteEepromBuffers(address, controlLines);
 
                     // Fetch the value to be compared
-                    controlLines = (UInt32)(ControlLine.RAM_OUT) | (UInt32)(ControlLine.B_REG_IN);
+                    controlLines = (UInt32)(ControlLineId.RAM_OUT) | (UInt32)(ControlLineId.B_REG_IN);
                     address = GenerateMicroInstructionAddress(opCode, reg, flags, step++);
                     WriteEepromBuffers(address, controlLines);
 
                     // Subtract the compare values, and use the zero flag as an equal flag
                     address = GenerateMicroInstructionAddress(opCode, null, flags, step++);
-                    controlLines = (UInt32)(ControlLine.SUBTRACT) | (UInt32)(ControlLine.UPDATE_FLAGS);
+                    controlLines = (UInt32)(ControlLineId.SUBTRACT) | (UInt32)(ControlLineId.UPDATE_FLAGS);
                     WriteEepromBuffers(address, controlLines);
 
                     // Restore B
-                    controlLines = (UInt32)(ControlLine.IR_PARAM_OUT) | (UInt32)(ControlLine.B_REG_IN);
+                    controlLines = (UInt32)(ControlLineId.IR_PARAM_OUT) | (UInt32)(ControlLineId.B_REG_IN);
                     address = GenerateMicroInstructionAddress(opCode, reg, flags, step++);
                     WriteEepromBuffers(address, controlLines);
                 }             
@@ -334,7 +303,7 @@ namespace MicrocodeGen
 
                 UInt16 address = GenerateMicroInstructionAddress(opCode, null, flags, step++);
 
-                UInt32 controlLines = (UInt32)(ControlLine.PC_IN) | (UInt32)(ControlLine.IR_PARAM_OUT);
+                UInt32 controlLines = (UInt32)(ControlLineId.PC_IN) | (UInt32)(ControlLineId.IR_PARAM_OUT);
 
                 WriteEepromBuffers(address, controlLines);
             }
@@ -356,7 +325,7 @@ namespace MicrocodeGen
                 // Only jump if the right flag is set, ptherwise it's a NOP
                 if ((flags | (byte)InstructionFlags.Zero) == 1)
                 {
-                    controlLines = (UInt32)(ControlLine.PC_IN) | (UInt32)(ControlLine.IR_PARAM_OUT);
+                    controlLines = (UInt32)(ControlLineId.PC_IN) | (UInt32)(ControlLineId.IR_PARAM_OUT);
                 }
 
                 WriteEepromBuffers(address, controlLines);
@@ -379,7 +348,7 @@ namespace MicrocodeGen
                 // Only jump if the right flag is set, ptherwise it's a NOP
                 if ((flags | (byte) InstructionFlags.Zero) == 0)
                 {
-                    controlLines = (UInt32)(ControlLine.PC_IN) | (UInt32)(ControlLine.IR_PARAM_OUT);
+                    controlLines = (UInt32)(ControlLineId.PC_IN) | (UInt32)(ControlLineId.IR_PARAM_OUT);
                 }
 
                 WriteEepromBuffers(address, controlLines);
@@ -402,7 +371,7 @@ namespace MicrocodeGen
                 // Only jump if the right flag is set, ptherwise it's a NOP
                 if ((flags | (byte)InstructionFlags.Carry) == 1)
                 {
-                    controlLines = (UInt32)(ControlLine.PC_IN) | (UInt32)(ControlLine.IR_PARAM_OUT);
+                    controlLines = (UInt32)(ControlLineId.PC_IN) | (UInt32)(ControlLineId.IR_PARAM_OUT);
                 }
 
                 WriteEepromBuffers(address, controlLines);
@@ -424,7 +393,7 @@ namespace MicrocodeGen
 
                     UInt32 regOut = MapRegisterToControlLineOut(reg);
 
-                    UInt32 controlLines = (UInt32)(ControlLine.OUT_REG_IN) | regOut;
+                    UInt32 controlLines = (UInt32)(ControlLineId.OUT_REG_IN) | regOut;
 
                     WriteEepromBuffers(address, controlLines);
                 }
@@ -442,7 +411,7 @@ namespace MicrocodeGen
 
                 UInt16 address = GenerateMicroInstructionAddress(opCode, null, flags, step++);
 
-                UInt32 controlLines = (UInt32)(ControlLine.HLT);
+                UInt32 controlLines = (UInt32)(ControlLineId.HLT);
 
                 WriteEepromBuffers(address, controlLines);
             }
@@ -460,9 +429,9 @@ namespace MicrocodeGen
             // The fetch steps are the same for every instruction. Note our code is stored in ROM not RAM
             // These steps fetch the next instruction and put it in the instruction register, then fetch the 8 bit parameter (which will be 0x00 is not used),
             // then advance the PC
-            UInt32 fetchStep0 = (UInt32)(ControlLine.PC_OUT) | (UInt32)(ControlLine.MAR_IN);
-            UInt32 fetchStep1 = (UInt32)(ControlLine.ROM_OUT) | (UInt32)(ControlLine.IR_IN);
-            UInt32 fetchStep2 = (UInt32)(ControlLine.ROM_OUT) | (UInt32)(ControlLine.ROM_BANK_1) | (UInt32)(ControlLine.IR_PARAM_IN) | (UInt32)(ControlLine.PC_ENABLE);
+            UInt32 fetchStep0 = (UInt32)(ControlLineId.PC_OUT) | (UInt32)(ControlLineId.MAR_IN);
+            UInt32 fetchStep1 = (UInt32)(ControlLineId.ROM_OUT) | (UInt32)(ControlLineId.IR_IN);
+            UInt32 fetchStep2 = (UInt32)(ControlLineId.ROM_OUT) | (UInt32)(ControlLineId.ROM_BANK_1) | (UInt32)(ControlLineId.IR_PARAM_IN) | (UInt32)(ControlLineId.PC_ENABLE);
 
             WriteEepromBuffers(addressStep0, fetchStep0);
             WriteEepromBuffers(addressStep1, fetchStep1);
@@ -538,11 +507,11 @@ namespace MicrocodeGen
             switch(reg)
             {
                 case Register.A:
-                    return (UInt32) ControlLine.A_REG_IN;
+                    return (UInt32) ControlLineId.A_REG_IN;
                    
 
                 case Register.B:
-                    return (UInt32)ControlLine.B_REG_IN;
+                    return (UInt32)ControlLineId.B_REG_IN;
 
                 default:
                     throw new Exception("Unknown register value");
@@ -557,11 +526,11 @@ namespace MicrocodeGen
             switch (reg)
             {
                 case Register.A:
-                    return (UInt32)ControlLine.A_REG_OUT;
+                    return (UInt32)ControlLineId.A_REG_OUT;
 
 
                 case Register.B:
-                    return (UInt32)ControlLine.B_REG_OUT;
+                    return (UInt32)ControlLineId.B_REG_OUT;
 
                 default:
                     throw new Exception("Unknown register value");
