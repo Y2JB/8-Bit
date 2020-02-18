@@ -1,32 +1,49 @@
 ﻿using System;
+using EightBitSystem;
 
 namespace Simulator
 {
 
     public class Alu : IAlu
     {
+        // The ALU is hardwired into the A and B registers. It is constantly adding or subtracting their values
+        IRegister aReg;
+        IRegister bReg;
+
+        public IBus Bus { get; private set; }
+
         public bool Carry { get { return false; } }
         public bool Zero { get { return false; } }
 
-        public byte Value { get; }
+        ControlLine busOutputLine;
+        ControlLine subLine;
 
-        IControlLine busOutputLine;
-        IControlLine subLine;
-
-
-        public Alu()
+        public byte Value
         {
+            get
+            {
+                if(subLine.State == true)
+                {
+                    return (byte) (aReg.Value - bReg.Value);
+                }
+                else
+                {
+                    return (byte) (aReg.Value + bReg.Value);
+                }
+            }
         }
 
-        // Add / Sub A to/from B
-        public int Add()
+        public Alu(IControlUnit controlUnit, IBus bus, IRegister aReg, IRegister bReg)
         {
-            return 0;
+            Bus = bus;
+
+            this.aReg = aReg;
+            this.bReg = bReg;
+
+            busOutputLine = controlUnit.GetControlLine(ControlLineId.SUM_OUT);
+            subLine = controlUnit.GetControlLine(ControlLineId.SUBTRACT);
         }
-        public int Sub()
-        {
-            return 0;
-        }
+
 
         public void Reset()
         {

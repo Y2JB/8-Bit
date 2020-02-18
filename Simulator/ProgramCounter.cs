@@ -1,23 +1,29 @@
 ﻿using System;
+using EightBitSystem;
 
 namespace Simulator
 {
 
     public class ProgramCounter : ICounter
     {
-        public bool CountEnabled { get; set; }
+        public bool CountEnabled { get { return countEnableLine.State; } }
 
-        public byte MaxValue { get; }
+        public byte MaxValue { get { return 255; } }
 
         public byte Value { get; private set; }
 
-        IControlLine busOutputLine;
-        IControlLine countEnableLine;
-        IControlLine loadLine;
-        IControlLine resetLine;
+        public IBus Bus { get; private set; }
 
-        public ProgramCounter()
+        ControlLine busOutputLine;
+        ControlLine countEnableLine;
+        ControlLine loadLine;
+
+        public ProgramCounter(IBus bus, IControlUnit controlUnit)
         {
+            this.Bus = bus;
+            busOutputLine = controlUnit.GetControlLine(ControlLineId.PC_OUT);
+            countEnableLine = controlUnit.GetControlLine(ControlLineId.PC_ENABLE);
+            loadLine = controlUnit.GetControlLine(ControlLineId.PC_IN);          
         }
 
         public void Reset()
@@ -25,8 +31,19 @@ namespace Simulator
             Value = 0;
         }
 
-        public void OnClockPulse()
+        public void OnRisingEdge()
         {
+            if(loadLine.State == true)
+            {
+                Value = Bus.Value;
+                return;
+            }
+
+            if (busOutputLine.State == true)
+            {
+                Bus.Driver = this;
+            }
+
             if(CountEnabled)
             {
                 Value++;
@@ -38,7 +55,7 @@ namespace Simulator
             }
         }
 
-        public void Load()
+        public void OnFallingEdge()
         {
         }
 

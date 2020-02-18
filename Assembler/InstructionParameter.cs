@@ -40,7 +40,7 @@ namespace asm
             int intValue = 0;
 
             // Param is a register 
-            Register reg;
+            GeneralPurposeRegisterId reg;
             if (Int32.TryParse(SourceAsm, out intValue) == false &&
                 Enum.TryParse(SourceAsm, out reg) && 
                 Enum.IsDefined(reg.GetType(), reg))

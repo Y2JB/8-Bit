@@ -6,9 +6,12 @@ namespace Simulator
     // 8 bit Bus
     public class Bus : IBus
     {
-        public byte Value()
+        public byte Value
         {
-            return (driver == null) ? (byte) 0 : driver.Value;
+            get
+            {
+                return (Driver == null) ? (byte) 0 : Driver.Value;
+            }
         }
         
         public bool GetBit(int bit)
@@ -17,7 +20,7 @@ namespace Simulator
         }
 
         // Who is driving the bus?
-        IBusConnectedComponent driver { get; set; }
+        public IBusConnectedComponent Driver { get; set; }
     }
 
 }

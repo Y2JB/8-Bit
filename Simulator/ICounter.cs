@@ -3,12 +3,10 @@
 namespace Simulator
 {
 
-    public interface ICounter : IBusConnectedComponent
+    public interface ICounter : IBusConnectedComponent, IClockConnectedComponent
     {
-        bool CountEnabled { get; set; }
+        bool CountEnabled { get; }
         byte MaxValue { get; }
-
-        void Load();
     }
 
 }

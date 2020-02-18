@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-
+using EightBitSystem;
 
 namespace Simulator
 {
@@ -11,14 +11,20 @@ namespace Simulator
         private MemoryStream mem = new MemoryStream(1024);
         private IRegister mar;
 
-        IControlLine busOutputLine;
+        ControlLine busOutputLine;
+
+        public IBus Bus { get; private set; }
 
         public byte Value { get { return Read(); } }
 
-        public Ram(IRegister mar)
+
+        public Ram(IBus bus, IControlUnit controlUnit, IRegister mar)
         {
+            this.Bus = bus;
+            busOutputLine = controlUnit.GetControlLine(ControlLineId.RAM_OUT);
             this.mar = mar;
         }
+
 
         public byte Read()
         {
@@ -26,18 +32,14 @@ namespace Simulator
             return mem.GetBuffer()[address];
         }
 
+
         public void Write(byte value)
         {
             byte address = (byte)mar.Value;
             mem.GetBuffer()[address] = value;
         }
 
-        public void Reset()
-        {
-        }
-        public void OnClockPulse()
-        {
-        }
+        
 
     }
 

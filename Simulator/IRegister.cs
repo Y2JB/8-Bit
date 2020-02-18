@@ -2,9 +2,8 @@
 
 namespace Simulator
 {
-    public interface IRegister
+    public interface IRegister : IBusConnectedComponent, IClockConnectedComponent
     {
-        byte Value { get; set; }
         string BinarytValue { get; }
 
         void SetBit(int bit, bool value);

@@ -113,7 +113,7 @@ namespace MicrocodeGen
         {
             OpCode opCode = OpCode.MOV;
 
-            foreach (Register reg in Enum.GetValues(typeof(Register)))
+            foreach (GeneralPurposeRegisterId reg in Enum.GetValues(typeof(GeneralPurposeRegisterId)))
             {
                 for (byte flags = 0; flags <= maxFlagsValue; flags++)
                 {
@@ -135,7 +135,7 @@ namespace MicrocodeGen
         {
             OpCode opCode = OpCode.LDR;
 
-            foreach (Register reg in Enum.GetValues(typeof(Register)))
+            foreach (GeneralPurposeRegisterId reg in Enum.GetValues(typeof(GeneralPurposeRegisterId)))
             {
                 for (byte flags = 0; flags <= maxFlagsValue; flags++)
                 {
@@ -161,7 +161,7 @@ namespace MicrocodeGen
         {
             OpCode opCode = OpCode.LDX;
 
-            foreach (Register reg in Enum.GetValues(typeof(Register)))
+            foreach (GeneralPurposeRegisterId reg in Enum.GetValues(typeof(GeneralPurposeRegisterId)))
             {
                 for (byte flags = 0; flags <= maxFlagsValue; flags++)
                 {
@@ -187,7 +187,7 @@ namespace MicrocodeGen
         {
             OpCode opCode = OpCode.STR;
 
-            foreach (Register reg in Enum.GetValues(typeof(Register)))
+            foreach (GeneralPurposeRegisterId reg in Enum.GetValues(typeof(GeneralPurposeRegisterId)))
             {
                 for (byte flags = 0; flags <= maxFlagsValue; flags++)
                 {
@@ -254,7 +254,7 @@ namespace MicrocodeGen
 
             // NB: This instruction takes the maximum of 8 uops (micro instructions)!
 
-            foreach (Register reg in Enum.GetValues(typeof(Register)))
+            foreach (GeneralPurposeRegisterId reg in Enum.GetValues(typeof(GeneralPurposeRegisterId)))
             {
                 UInt32 regIn = MapRegisterToControlLineIn(reg);
 
@@ -383,7 +383,7 @@ namespace MicrocodeGen
         {
             OpCode opCode = OpCode.OUT;
 
-            foreach (Register reg in Enum.GetValues(typeof(Register)))
+            foreach (GeneralPurposeRegisterId reg in Enum.GetValues(typeof(GeneralPurposeRegisterId)))
             {
                 for (byte flags = 0; flags <= maxFlagsValue; flags++)
                 {
@@ -418,7 +418,7 @@ namespace MicrocodeGen
         }
 
 
-        private int GenerateFetchMicrocode(OpCode opCode, Nullable<Register> reg, byte flags)
+        private int GenerateFetchMicrocode(OpCode opCode, Nullable<GeneralPurposeRegisterId> reg, byte flags)
         {
             int step = 0;
             // Generate the address for the control word based on the Instruction and the current step
@@ -444,7 +444,7 @@ namespace MicrocodeGen
         // The control lines that will be switched on are contained in the image at an address generated here
         // We currently generate 11 bit addresses (though we have room for 15 bit addr) They are generated out of 'opCode Param microStep', with least significant bit on the right
         // CCCCCPPPFFFFSSS
-        private UInt16 GenerateMicroInstructionAddress(OpCode opCode, Nullable<Register> reg, byte flags, int microStep)
+        private UInt16 GenerateMicroInstructionAddress(OpCode opCode, Nullable<GeneralPurposeRegisterId> reg, byte flags, int microStep)
         {
             // Flags are 4 bits
             if(flags > 0x0F)
@@ -502,15 +502,15 @@ namespace MicrocodeGen
 
 
         // Used to map which control line we turn on to read into a register
-        UInt32 MapRegisterToControlLineIn(Register reg)
+        UInt32 MapRegisterToControlLineIn(GeneralPurposeRegisterId reg)
         {
             switch(reg)
             {
-                case Register.A:
+                case GeneralPurposeRegisterId.A:
                     return (UInt32) ControlLineId.A_REG_IN;
                    
 
-                case Register.B:
+                case GeneralPurposeRegisterId.B:
                     return (UInt32)ControlLineId.B_REG_IN;
 
                 default:
@@ -521,15 +521,15 @@ namespace MicrocodeGen
 
 
         // Used to map which control line we turn on to output to a register
-        UInt32 MapRegisterToControlLineOut(Register reg)
+        UInt32 MapRegisterToControlLineOut(GeneralPurposeRegisterId reg)
         {
             switch (reg)
             {
-                case Register.A:
+                case GeneralPurposeRegisterId.A:
                     return (UInt32)ControlLineId.A_REG_OUT;
 
 
-                case Register.B:
+                case GeneralPurposeRegisterId.B:
                     return (UInt32)ControlLineId.B_REG_OUT;
 
                 default:

@@ -1,4 +1,5 @@
 ﻿using System;
+using EightBitSystem;
 
 namespace Simulator
 {
@@ -14,11 +15,12 @@ namespace Simulator
 
         int frequencyHz;
         Mode mode;
-        IControlLine HltLine;
+        ControlLine HltLine;
 
 
-        public Clock()
+        public Clock(IControlUnit controlUnit)
         {
+            HltLine = controlUnit.GetControlLine(ControlLineId.HLT);
             frequencyHz = 1;
             mode = Mode.Halted;
         }

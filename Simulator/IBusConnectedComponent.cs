@@ -6,10 +6,8 @@ namespace Simulator
 
     public interface IBusConnectedComponent
     {
-        void Reset();
-        void OnClockPulse();
-
         byte Value { get; }
+        IBus Bus { get; }
     }
 
 }

@@ -26,10 +26,20 @@ namespace EightBitSystem
     }
 
 
-    public enum Register
+    public enum GeneralPurposeRegisterId
     {
         A = 1,
         B = 2,
+    }
+
+    public enum SystemRegister
+    {
+        A = 1,
+        B,
+        MAR,
+        OUT,
+        IR,
+        IR_PARAM
     }
 
     public enum InstructionFlags
