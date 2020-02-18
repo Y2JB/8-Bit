@@ -11,9 +11,10 @@ namespace Simulator
 
         public byte Value { get; private set; }
 
-        IControlLine CountEnableLine;
-        IControlLine LoadLine;
-        IControlLine ResetLine;
+        IControlLine busOutputLine;
+        IControlLine countEnableLine;
+        IControlLine loadLine;
+        IControlLine resetLine;
 
         public ProgramCounter()
         {

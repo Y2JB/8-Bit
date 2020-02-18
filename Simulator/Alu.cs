@@ -10,6 +10,7 @@ namespace Simulator
 
         public byte Value { get; }
 
+        IControlLine busOutputLine;
         IControlLine subLine;
 
 

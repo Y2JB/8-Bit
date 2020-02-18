@@ -11,6 +11,8 @@ namespace Simulator
         private MemoryStream mem = new MemoryStream(32 * 1024);
         private IRegister mar;
 
+        IControlLine busOutputLine;
+
         public byte Value { get { return Read(); } }
 
 
