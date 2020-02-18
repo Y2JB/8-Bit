@@ -8,9 +8,6 @@ namespace Simulator
         ControlLineId Id { get; }
 
         string Name { get; }
-
-        IBusConnectedComponent ConnectionA { get; }
-        IBusConnectedComponent ConnectionB { get; }
         
         bool State { get; }
     }

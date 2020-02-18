@@ -10,7 +10,7 @@ namespace Simulator
 
         public byte Value { get; }
 
-        public IControlLine SubControlLine { get; }
+        IControlLine subLine;
 
 
         public Alu()

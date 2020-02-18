@@ -5,7 +5,10 @@ namespace Simulator
 
     public interface IClock
     {
-        void Pulse();
+        void Step();
+
+        void OnHigh();
+        void OnLow();
     }
 
 }
