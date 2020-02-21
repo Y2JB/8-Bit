@@ -10,6 +10,7 @@ namespace Simulator
     public interface IControlUnit : IClockConnectedComponent
     {
         IRegister InstructionRegister { get; set; }
+        IRegister FlagsRegister { get; set; }
         ICounter MicrostepCounter { get; set; }
         ControlLine GetControlLine(ControlLineId lineId);
         void LoadMicrocode();

@@ -10,6 +10,7 @@ namespace Simulator
     public class ControlUnit : IControlUnit
     {
         public IRegister InstructionRegister { get;  set; }
+        public IRegister FlagsRegister { get; set; }
         public ICounter MicrostepCounter { get; set; }
 
         Dictionary<ControlLineId, ControlLine> controlLines = new Dictionary<ControlLineId, ControlLine>();
@@ -56,9 +57,8 @@ namespace Simulator
 
         public void OnFallingEdge()
         {
-            UInt16 regValue = 0;
             int microStep = MicrostepCounter.Value;
-            int flags = 0;
+            int flags = FlagsRegister.Value;
 
             UInt16 address = (UInt16)(((UInt16)(InstructionRegister.Value) << 7) | flags << 3 | microStep);
 

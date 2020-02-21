@@ -28,6 +28,8 @@ namespace Simulator
 
         public void OutputState()
         {
+            Console.ForegroundColor = ConsoleColor.Black;
+
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y);
             Console.Write(String.Format("     BUS - Value: {0}   ", Driver == null ? 0 : Driver.Value));
 
@@ -37,7 +39,6 @@ namespace Simulator
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
             Console.Write(String.Format("     Driver: {0}  ", Driver == null ? "null" : Driver.Name));
 
-            Console.ForegroundColor = ConsoleColor.Black;
             if (Driver != null)
             {
                 Console.ForegroundColor = ConsoleColor.Red;

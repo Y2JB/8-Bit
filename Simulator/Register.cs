@@ -4,7 +4,7 @@ using EightBitSystem;
 
 namespace Simulator
 {
-    public class Register : IRegister
+    public class Register : IRegister, IBusConnectedComponent
     {
         SystemRegister id;
 
@@ -118,7 +118,7 @@ namespace Simulator
 
         public void OnRisingEdge()
         {
-            if(busInputLine.State == true)
+            if(busInputLine != null && busInputLine.State == true)
             {
                 Value = Bus.Value;
                 return;
@@ -143,7 +143,7 @@ namespace Simulator
             {
                 Console.ForegroundColor = ConsoleColor.Red;
             }
-            if(busInputLine.State)
+            if(busInputLine != null && busInputLine.State)
             {
                 Console.ForegroundColor = ConsoleColor.Blue;
             }
@@ -153,6 +153,19 @@ namespace Simulator
             Console.Write("|                       |");
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
             Console.Write(String.Format("|{0} - 0x{1:X2}", id.ToString(), Value));
+
+            // Yes this should be done with inheritence...
+            if (id == SystemRegister.IR)
+            {
+                OpCode opCode = (OpCode) (Value >> 3);
+                GeneralPurposeRegisterId reg = (GeneralPurposeRegisterId)(Value & 0x07);            
+                Console.Write(String.Format(" {0}",opCode.ToString()));
+
+                if(Enum.IsDefined(reg.GetType(), reg))
+                {
+                    Console.Write(String.Format(" {0}", reg.ToString()));
+                }
+            }
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 2);
             Console.Write("|-----------------------|");
         }

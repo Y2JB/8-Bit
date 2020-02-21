@@ -225,9 +225,11 @@ namespace MicrocodeGen
                 int step = GenerateFetchMicrocode(opCode, null, flags);
 
                 UInt16 address = GenerateMicroInstructionAddress(opCode, null, flags, step++);
+                UInt32 controlLines = (UInt32)(ControlLineId.UPDATE_FLAGS);
+                WriteEepromBuffers(address, controlLines);
 
-                UInt32 controlLines = (UInt32)(ControlLineId.SUM_OUT) | (UInt32)(ControlLineId.A_REG_IN);
-
+                address = GenerateMicroInstructionAddress(opCode, null, flags, step++);
+                controlLines = (UInt32)(ControlLineId.SUM_OUT) | (UInt32)(ControlLineId.A_REG_IN);
                 WriteEepromBuffers(address, controlLines);
             }           
         }
@@ -242,7 +244,10 @@ namespace MicrocodeGen
                 int step = GenerateFetchMicrocode(opCode, null, flags);
 
                 UInt16 address = GenerateMicroInstructionAddress(opCode, null, flags, step++);
-                UInt32 controlLines = (UInt32)(ControlLineId.SUM_OUT) | (UInt32)(ControlLineId.A_REG_IN) | (UInt32)(ControlLineId.SUBTRACT);
+                UInt32 controlLines = (UInt32)(ControlLineId.UPDATE_FLAGS);
+
+                address = GenerateMicroInstructionAddress(opCode, null, flags, step++);
+                controlLines = (UInt32)(ControlLineId.SUM_OUT) | (UInt32)(ControlLineId.A_REG_IN) | (UInt32)(ControlLineId.SUBTRACT);
                 WriteEepromBuffers(address, controlLines);
             }
         }
@@ -323,7 +328,7 @@ namespace MicrocodeGen
                 UInt32 controlLines = 0;
 
                 // Only jump if the right flag is set, ptherwise it's a NOP
-                if ((flags | (byte)InstructionFlags.Zero) == 1)
+                if ((flags | (byte)AluFlags.Zero) == 1)
                 {
                     controlLines = (UInt32)(ControlLineId.PC_IN) | (UInt32)(ControlLineId.IR_PARAM_OUT);
                 }
@@ -346,7 +351,7 @@ namespace MicrocodeGen
                 UInt32 controlLines = 0;
 
                 // Only jump if the right flag is set, ptherwise it's a NOP
-                if ((flags | (byte) InstructionFlags.Zero) == 0)
+                if ((flags | (byte) AluFlags.Zero) == 0)
                 {
                     controlLines = (UInt32)(ControlLineId.PC_IN) | (UInt32)(ControlLineId.IR_PARAM_OUT);
                 }
@@ -369,7 +374,7 @@ namespace MicrocodeGen
                 UInt32 controlLines = 0;
 
                 // Only jump if the right flag is set, ptherwise it's a NOP
-                if ((flags | (byte)InstructionFlags.Carry) == 1)
+                if ((flags | (byte)AluFlags.Carry) == 1)
                 {
                     controlLines = (UInt32)(ControlLineId.PC_IN) | (UInt32)(ControlLineId.IR_PARAM_OUT);
                 }

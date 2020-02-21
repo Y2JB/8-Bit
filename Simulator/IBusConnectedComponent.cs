@@ -6,8 +6,8 @@ namespace Simulator
 
     public interface IBusConnectedComponent
     {
+        public string Name { get; }
         byte Value { get; }
-        string Name { get; }
         IBus Bus { get; }
     }
 

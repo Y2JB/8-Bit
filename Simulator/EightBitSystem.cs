@@ -18,7 +18,7 @@ namespace Simulator
         IRegister Ir { get; set; }
         IRegister IrParam { get; set; }        
         IRegister Mar { get; set; }
-        //IRegister Flags { get; set; }
+        IRegister Flags { get; set; }
         Ram Ram { get; set; }
         Rom Rom { get; set; }
         IControlUnit ControlUnit { get; set; }
@@ -61,16 +61,25 @@ namespace Simulator
             this.IrParam.consoleXY = new Point(leftPrint, 5 * moduleHeight);
 
             this.Out = new Register(SystemRegister.OUT, this.Clock, this.Bus, this.ControlUnit);
-            this.Out.consoleXY = new Point(rightPrint, 4 * moduleHeight);
+            this.Out.consoleXY = new Point(rightPrint, 5 * moduleHeight);
+
+            this.ProgramCounter = new ProgramCounter(this.Clock, this.Bus, this.ControlUnit);
+            this.ProgramCounter.consoleXY = new Point(rightPrint, 0);
+
+            this.Alu = new Alu(this.ControlUnit, this.Bus, this.A, this.B);
+            this.Alu.consoleXY = new Point(rightPrint, 2 * moduleHeight);
+
+            this.Flags = new Register4Bit(SystemRegister.FLAGS, this.Clock, this.ControlUnit, this.Alu);
+            this.Flags.consoleXY = new Point(rightPrint, 4 * moduleHeight);
 
             this.MicrostepCounter = new MicrostepCounter(this.Clock);
 
             // load the microcode images
             ControlUnit.LoadMicrocode();
             ControlUnit.InstructionRegister = this.Ir;
+            ControlUnit.FlagsRegister = this.Flags;
             ControlUnit.MicrostepCounter = this.MicrostepCounter;
-
-
+         
             //string fn = "C:/Users/bellamj/source/repos/JonBellamy/8-Bit/Sample ASM/test.asm";
             string romFile = "/Users/jonbellamy/Projects/8-Bit/Sample ASM/test.rom";
             MemoryStream romContents = new MemoryStream(File.ReadAllBytes(romFile));
@@ -80,12 +89,6 @@ namespace Simulator
 
             this.Ram = new Ram(this.Bus, this.ControlUnit, this.Mar);
             this.Ram.consoleXY = new Point(leftPrint, 3 * moduleHeight);
-
-            this.ProgramCounter = new ProgramCounter(this.Clock, this.Bus, this.ControlUnit);
-            this.ProgramCounter.consoleXY = new Point(rightPrint, 0);
-
-            this.Alu = new Alu(this.ControlUnit, this.Bus, this.A, this.B);
-            this.Alu.consoleXY = new Point(rightPrint, 2 * moduleHeight);
 
             ConsoleKeyInfo key;
             do
@@ -102,10 +105,11 @@ namespace Simulator
                 this.Bus.OutputState();
 
                 // Right modules
+                ProgramCounter.OutputState();
                 A.OutputState();
                 Alu.OutputState();
                 B.OutputState();
-                ProgramCounter.OutputState();
+                Flags.OutputState();
                 Out.OutputState();
 
 

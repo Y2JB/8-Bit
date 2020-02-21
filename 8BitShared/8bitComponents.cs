@@ -39,10 +39,11 @@ namespace EightBitSystem
         MAR,
         OUT,
         IR,
-        IR_PARAM
+        IR_PARAM,
+        FLAGS
     }
 
-    public enum InstructionFlags
+    public enum AluFlags
     {
         Zero    = 1 << 0,
         Carry   = 1 << 1
@@ -64,9 +65,9 @@ namespace EightBitSystem
         SUM_OUT         = 1 << 6,           // ALU -> Bus (outputs the last ADD, SUB, MUL etc to the bus)                       
         SUBTRACT        = 1 << 7,           // ALU output will be Subtract (instead of ADD)            
  // EEPROM 2
-        UPDATE_FLAGS    = 1 << 8,
+        UPDATE_FLAGS    = 1 << 8,           // Flags register will latch the ALU flags on the next clock pulse
         B_REG_IN        = 1 << 9,           // B <- Bus
-        B_REG_OUT       = 1 << 10,           // B -> Bus
+        B_REG_OUT       = 1 << 10,          // B -> Bus
         OUT_REG_IN      = 1 << 11,          // OUT <- Bus (new value will appear on LCD display)
         IR_IN           = 1 << 12,          // Instruction Register
         IR_PARAM_IN     = 1 << 13,          // Instruction Register 8 Bit Operand <- Bus
