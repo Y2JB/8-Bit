@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 
 namespace Simulator
 {
@@ -8,5 +9,8 @@ namespace Simulator
 
         void SetBit(int bit, bool value);
         bool GetBit(int bit);
+
+        Point consoleXY { get; set; }
+        void OutputState();
     }
 }

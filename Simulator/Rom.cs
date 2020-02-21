@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.IO;
 using EightBitSystem;
 
@@ -18,11 +19,14 @@ namespace Simulator
 
         public byte Value { get { return Read(); } }
 
+        public Point consoleXY { get; set; }
+
 
         public Rom(IBus bus, IControlUnit controlUnit, IRegister mar)
         {
             this.Bus = bus;
             busOutputLine = controlUnit.GetControlLine(ControlLineId.ROM_OUT);
+            romBank1Line = controlUnit.GetControlLine(ControlLineId.ROM_BANK_1);
             this.mar = mar;
 
             // Setup the callback for when the bus output line goes high or low. Depending on which, we either start or stop driving the bus
@@ -51,7 +55,11 @@ namespace Simulator
 
         public byte Read()
         {
-            byte address = (byte) mar.Value;
+            int address = (int) mar.Value;
+            if(romBank1Line.State)
+            {
+                address = address | 0x10;
+            }
             return mem.GetBuffer()[address];
         }
 
@@ -61,6 +69,15 @@ namespace Simulator
             throw new InvalidOperationException();
         }
 
+        public void OutputState()
+        {
+            Console.SetCursorPosition(consoleXY.X, consoleXY.Y);
+            Console.Write("|-----------------------|");
+            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
+            Console.Write(String.Format("ROM - {0}", Value));
+            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 2);
+            Console.Write("|-----------------------|");
+        }
     }
 
 }

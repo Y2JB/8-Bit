@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using EightBitSystem;
 
 namespace Simulator
@@ -10,6 +11,8 @@ namespace Simulator
         public IBus Bus { get; private set; }
 
         public byte Value { get; private set; }
+
+        public Point consoleXY { get; set; }
         
         public string BinarytValue { get { return Convert.ToString(Value, 2).PadLeft(8, '0'); } }
 
@@ -127,7 +130,20 @@ namespace Simulator
         }
 
 
-        public void OnFallingEdge() { }
-       
+        public void OnFallingEdge()
+        {
+        }
+
+
+        public void OutputState()
+        {
+            Console.SetCursorPosition(consoleXY.X, consoleXY.Y);
+            Console.Write("|-----------------------|");
+            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
+            Console.Write(String.Format("{0} - {1}", id.ToString(), Value));
+            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 2);
+            Console.Write("|-----------------------|");
+        }
+
     }
 }

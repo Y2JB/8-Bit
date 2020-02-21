@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using EightBitSystem;
 
@@ -11,7 +12,11 @@ namespace Simulator
         IRegister InstructionRegister { get; set; }
         ICounter MicrostepCounter { get; set; }
         ControlLine GetControlLine(ControlLineId lineId);
-        public void LoadMicrocode();
+        void LoadMicrocode();
+
+
+        Point consoleXY { get; set; }
+        void OutputState();
     }
 
 }

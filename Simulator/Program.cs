@@ -7,8 +7,7 @@ namespace Simulator
         static void Main(string[] args)
         {
             EightBitSystem system = new EightBitSystem();
-
-            Console.WriteLine();
+     
         }
     }
 }

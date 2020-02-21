@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 
 namespace Simulator
 {
@@ -9,6 +10,9 @@ namespace Simulator
 
         byte Read();
         void Write(byte value);
+
+        Point consoleXY { get; set; }
+        void OutputState();
     }
 
 }

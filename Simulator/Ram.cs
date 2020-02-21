@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.IO;
 using EightBitSystem;
 
@@ -16,6 +17,8 @@ namespace Simulator
         public IBus Bus { get; private set; }
 
         public byte Value { get { return Read(); } }
+
+        public Point consoleXY { get; set; }
 
 
         public Ram(IBus bus, IControlUnit controlUnit, IRegister mar)
@@ -56,7 +59,17 @@ namespace Simulator
             mem.GetBuffer()[address] = value;
         }
 
-        
+
+        public void OutputState()
+        {
+            Console.SetCursorPosition(consoleXY.X, consoleXY.Y);
+            Console.Write("|-----------------------|");
+            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
+            Console.Write(String.Format("RAM - {0}", Value));
+            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 2);
+            Console.Write("|-----------------------|");
+        }
+
 
     }
 

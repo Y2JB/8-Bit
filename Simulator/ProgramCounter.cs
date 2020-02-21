@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using EightBitSystem;
 
 namespace Simulator
@@ -13,6 +14,8 @@ namespace Simulator
         public byte Value { get; private set; }
 
         public IBus Bus { get; private set; }
+
+        public Point consoleXY { get; set; }
 
         ControlLine busOutputLine;
         ControlLine countEnableLine;
@@ -77,6 +80,16 @@ namespace Simulator
         {
         }
 
+
+        public void OutputState()
+        {
+            Console.SetCursorPosition(consoleXY.X, consoleXY.Y);
+            Console.Write("|-----------------------|");
+            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
+            Console.Write(String.Format("PC - {0}", Value));
+            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 2);
+            Console.Write("|-----------------------|");
+        }
     }
 
 }

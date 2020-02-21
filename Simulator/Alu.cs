@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using EightBitSystem;
 
 namespace Simulator
@@ -17,6 +18,8 @@ namespace Simulator
 
         ControlLine busOutputLine;
         ControlLine subLine;
+
+        public Point consoleXY { get; set; }
 
         public byte Value
         {
@@ -45,12 +48,14 @@ namespace Simulator
         }
 
 
-        public void Reset()
+        public void OutputState()
         {
-        }
-
-        public void OnClockPulse()
-        {
+            Console.SetCursorPosition(consoleXY.X, consoleXY.Y);
+            Console.Write("|-----------------------|");
+            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
+            Console.Write(String.Format("ALU - {0} Zero {1} Carry {2}", Value, Zero, Carry));
+            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 2);
+            Console.Write("|-----------------------|");
         }
     }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using EightBitSystem;
 
@@ -15,6 +16,8 @@ namespace Simulator
         byte[] microcodeEeprom0;
         byte[] microcodeEeprom1;
         byte[] microcodeEeprom2;
+
+        public Point consoleXY { get; set; }
 
         public ControlUnit(IClock clock)
         {           
@@ -77,6 +80,26 @@ namespace Simulator
                 }
 
             }
+        }
+
+
+        public void OutputState()
+        {
+            Console.SetCursorPosition(consoleXY.X, consoleXY.Y);
+            Console.Write("|---------------------------------------------------------------------|");
+            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
+            foreach (var line in controlLines)
+            {
+                if (line.Value.State)
+                {
+                    Console.Write(line.Key.ToString() + " ");
+                }
+            }
+            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 2);
+            Console.Write(String.Format("MicroStep - {0}", MicrostepCounter.Value));
+            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 3);
+            Console.Write("|---------------------------------------------------------------------|");
+
         }
     }
 

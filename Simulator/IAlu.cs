@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 
 namespace Simulator
 {
@@ -8,6 +9,9 @@ namespace Simulator
         
         bool Carry { get; }
         bool Zero { get; }
+
+        Point consoleXY { get; set; }
+        void OutputState();
     }
 
 }

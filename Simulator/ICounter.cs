@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 
 namespace Simulator
 {
@@ -8,6 +9,9 @@ namespace Simulator
         bool CountEnabled { get; }
         byte MaxValue { get; }
         byte Value { get; }
+
+        Point consoleXY { get; set; }
+        void OutputState();
     }
 
 }

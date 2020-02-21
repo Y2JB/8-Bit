@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using EightBitSystem;
 
 namespace Simulator
@@ -11,6 +12,8 @@ namespace Simulator
         public byte MaxValue { get { return 7; } }
 
         public byte Value { get; private set; }
+
+        public Point consoleXY { get; set; }
 
 
         public MicrostepCounter(IClock clock)
@@ -40,6 +43,11 @@ namespace Simulator
             }
         }
 
+
+        public void OutputState()
+        {
+
+        }
     }
 
 }
