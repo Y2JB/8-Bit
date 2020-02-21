@@ -16,13 +16,15 @@ namespace Simulator
         ControlLine busOutputLine;
         ControlLine busInputLine;
 
-        public Register(SystemRegister id, IBus bus, IControlUnit controlUnit)
+        public Register(SystemRegister id, IClock clock, IBus bus, IControlUnit controlUnit)
         {
             this.id = id;
             Bus = bus;
             Value = 0;
 
-            switch(id)
+            clock.clockConnectedComponents.Add(this);
+
+            switch (id)
             {
                 case SystemRegister.A:
                     busOutputLine = controlUnit.GetControlLine(ControlLineId.A_REG_OUT);
@@ -56,6 +58,26 @@ namespace Simulator
 
                 default:
                     throw new ArgumentException("missing reg type");
+            }
+
+            // Setup the callback for when the bus output line goes high or low. Depending on which, we either start or stop driving the bus
+            if(busOutputLine != null)
+            {
+                busOutputLine.onTransition = () =>
+                {
+                    if (busOutputLine.State == true)
+                    {
+                        Bus.Driver = this;
+                    }
+                    else
+                    {
+                        if(Bus.Driver == this)
+                        {
+                            Bus.Driver = null;
+                        }
+                    }
+                    return true;
+                };
             }
         }
 
@@ -98,7 +120,7 @@ namespace Simulator
                 return;
             }
 
-            if(busOutputLine.State == true)
+            if(busOutputLine != null && busOutputLine.State == true)
             {
                 Bus.Driver = this;
             }

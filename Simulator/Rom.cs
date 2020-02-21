@@ -12,6 +12,7 @@ namespace Simulator
         private IRegister mar;
 
         ControlLine busOutputLine;
+        ControlLine romBank1Line;
 
         public IBus Bus { get; private set; }
 
@@ -23,6 +24,23 @@ namespace Simulator
             this.Bus = bus;
             busOutputLine = controlUnit.GetControlLine(ControlLineId.ROM_OUT);
             this.mar = mar;
+
+            // Setup the callback for when the bus output line goes high or low. Depending on which, we either start or stop driving the bus
+            busOutputLine.onTransition = () =>
+            {
+                if (busOutputLine.State == true)
+                {
+                    Bus.Driver = this;
+                }
+                else
+                {
+                    if (Bus.Driver == this)
+                    {
+                        Bus.Driver = null;
+                    }
+                }
+                return true;
+            };
         }
 
         // Used to load code

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Simulator
 {
@@ -7,8 +8,7 @@ namespace Simulator
     {
         void Step();
 
-        void OnHigh();
-        void OnLow();
+        List<IClockConnectedComponent> clockConnectedComponents { get; }
     }
 
 }

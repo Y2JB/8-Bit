@@ -8,16 +8,26 @@ namespace Simulator
 
     public class ControlUnit : IControlUnit
     {
-        protected Dictionary<ControlLineId, ControlLine> controlLines = new Dictionary<ControlLineId, ControlLine>();
+        public IRegister InstructionRegister { get;  set; }
+        public ICounter MicrostepCounter { get; set; }
 
-        public ControlUnit()
-        {
+        Dictionary<ControlLineId, ControlLine> controlLines = new Dictionary<ControlLineId, ControlLine>();
+        byte[] microcodeEeprom0;
+        byte[] microcodeEeprom1;
+        byte[] microcodeEeprom2;
+
+        public ControlUnit(IClock clock)
+        {           
+            clock.clockConnectedComponents.Add(this);
             CreateControlLines();
         }
 
 
-        public void LoadMicrocode(MemoryStream eeprom0, MemoryStream eeprom1, MemoryStream eeprom2)
+        public void LoadMicrocode()
         {
+            microcodeEeprom0 = new MemoryStream(File.ReadAllBytes("/Users/jonbellamy/Projects/8-Bit/Sample Microcode/Microcode-Bank0.bin")).ToArray();
+            microcodeEeprom1 = new MemoryStream(File.ReadAllBytes("/Users/jonbellamy/Projects/8-Bit/Sample Microcode/Microcode-Bank1.bin")).ToArray();
+            microcodeEeprom2 = new MemoryStream(File.ReadAllBytes("/Users/jonbellamy/Projects/8-Bit/Sample Microcode/Microcode-Bank2.bin")).ToArray();
         }
 
 
@@ -29,17 +39,44 @@ namespace Simulator
             }
         }
 
+
         public ControlLine GetControlLine(ControlLineId lineId)
         {
             return controlLines[lineId];
         }
 
+
         public void OnRisingEdge()
         {
         }
 
+
         public void OnFallingEdge()
         {
+            UInt16 regValue = 0;
+            int microStep = MicrostepCounter.Value;
+            int flags = 0;
+
+            UInt16 address = (UInt16)(((UInt16)(InstructionRegister.Value) << 10) | regValue << 7 | flags << 4 | microStep);
+
+            UInt32 controlWord = (UInt32) ((microcodeEeprom2[address] << 16) | (microcodeEeprom1[address] << 8) | microcodeEeprom0[address]);
+
+            foreach (var line in controlLines)
+            {
+                bool newLineValue = false;
+                UInt32 lineid = (UInt32)(line.Key);
+                if ((controlWord & lineid) != 0)
+                {
+                    newLineValue = true;
+                }
+
+                if(line.Value.State != newLineValue)
+                {
+                    line.Value.State = newLineValue;
+                    if (line.Value.onTransition != null) line.Value.onTransition();
+                }
+
+            }
         }
     }
 

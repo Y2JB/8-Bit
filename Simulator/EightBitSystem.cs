@@ -17,39 +17,52 @@ namespace Simulator
         IRegister Ir { get; set; }
         IRegister IrParam { get; set; }        
         IRegister Mar { get; set; }
+        //IRegister Flags { get; set; }
         Ram Ram { get; set; }
         Rom Rom { get; set; }
         IControlUnit ControlUnit { get; set; }
         ICounter ProgramCounter { get; set; }
+        ICounter MicrostepCounter { get; set; }
         IBus Bus { get; set; }
 
         public EightBitSystem()
         {
+            this.Clock = new Clock();
+            this.ControlUnit = new ControlUnit(this.Clock);
+
             this.Bus = new Bus();
+            
+            this.A = new Register(SystemRegister.A, this.Clock, this.Bus, this.ControlUnit);
+            this.B = new Register(SystemRegister.B, this.Clock, this.Bus, this.ControlUnit);
+            this.Mar = new Register(SystemRegister.MAR, this.Clock, this.Bus, this.ControlUnit);
+            this.Ir = new Register(SystemRegister.IR, this.Clock, this.Bus, this.ControlUnit);
+            this.IrParam = new Register(SystemRegister.IR_PARAM, this.Clock, this.Bus, this.ControlUnit);
+            this.Out = new Register(SystemRegister.OUT, this.Clock, this.Bus, this.ControlUnit);
 
-            this.ControlUnit = new ControlUnit();
-            this.A = new Register(SystemRegister.A, this.Bus, this.ControlUnit);
-            this.B = new Register(SystemRegister.B, this.Bus, this.ControlUnit);
-            this.Mar = new Register(SystemRegister.MAR, this.Bus, this.ControlUnit);
-            this.Ir = new Register(SystemRegister.IR, this.Bus, this.ControlUnit);
-            this.IrParam = new Register(SystemRegister.IR_PARAM, this.Bus, this.ControlUnit);
-            this.Out = new Register(SystemRegister.OUT, this.Bus, this.ControlUnit);
+            this.MicrostepCounter = new MicrostepCounter(this.Clock);
 
-            // load the microcodeimages
-            ControlUnit.LoadMicrocode(null, null, null);
+            // load the microcode images
+            ControlUnit.LoadMicrocode();
+            ControlUnit.InstructionRegister = this.Ir;
+            ControlUnit.MicrostepCounter = this.MicrostepCounter;
+
 
             //string fn = "C:/Users/bellamj/source/repos/JonBellamy/8-Bit/Sample ASM/test.asm";
-            string fn = "/Users/jonbellamy/Projects/8-Bit/Sample ASM/test.rom";
-            MemoryStream romContents = new MemoryStream(File.ReadAllBytes(fn));
+            string romFile = "/Users/jonbellamy/Projects/8-Bit/Sample ASM/test.rom";
+            MemoryStream romContents = new MemoryStream(File.ReadAllBytes(romFile));
             this.Rom = new Rom(this.Bus, this.ControlUnit, this.Mar);
             this.Rom.Load(romContents);
 
             this.Ram = new Ram(this.Bus, this.ControlUnit, this.Mar);
 
-            this.ProgramCounter = new ProgramCounter(this.Bus, this.ControlUnit);
+            this.ProgramCounter = new ProgramCounter(this.Clock, this.Bus, this.ControlUnit);
 
             this.Alu = new Alu(this.ControlUnit, this.Bus, this.A, this.B);
 
+
+            this.Clock.Step();
+            this.Clock.Step();
+            this.Clock.Step();
         }
 
             

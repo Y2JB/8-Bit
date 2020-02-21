@@ -4,7 +4,7 @@ using EightBitSystem;
 namespace Simulator
 {
 
-    public class ProgramCounter : ICounter
+    public class ProgramCounter : ICounter, IBusConnectedComponent
     {
         public bool CountEnabled { get { return countEnableLine.State; } }
 
@@ -18,12 +18,30 @@ namespace Simulator
         ControlLine countEnableLine;
         ControlLine loadLine;
 
-        public ProgramCounter(IBus bus, IControlUnit controlUnit)
+        public ProgramCounter(IClock clock, IBus bus, IControlUnit controlUnit)
         {
             this.Bus = bus;
             busOutputLine = controlUnit.GetControlLine(ControlLineId.PC_OUT);
             countEnableLine = controlUnit.GetControlLine(ControlLineId.PC_ENABLE);
-            loadLine = controlUnit.GetControlLine(ControlLineId.PC_IN);          
+            loadLine = controlUnit.GetControlLine(ControlLineId.PC_IN);
+            clock.clockConnectedComponents.Add(this);
+
+            // Setup the callback for when the bus output line goes high or low. Depending on which, we either start or stop driving the bus
+            busOutputLine.onTransition = () =>
+            {
+                if (busOutputLine.State == true)
+                {
+                    Bus.Driver = this;
+                }
+                else
+                {
+                    if (Bus.Driver == this)
+                    {
+                        Bus.Driver = null;
+                    }
+                }
+                return true;
+            };
         }
 
         public void Reset()

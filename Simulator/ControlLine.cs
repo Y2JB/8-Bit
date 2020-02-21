@@ -12,6 +12,8 @@ namespace Simulator
         
         public bool State { get; set; }
 
+        public Func<bool> onTransition;
+
         public ControlLine(ControlLineId id)
         {
             Id = id;
