@@ -9,6 +9,7 @@ namespace Simulator
         SystemRegister id;
 
         public IBus Bus { get; private set; }
+        public string Name { get { return id.ToString(); } }
 
         public byte Value { get; private set; }
 
@@ -137,10 +138,21 @@ namespace Simulator
 
         public void OutputState()
         {
+            Console.ForegroundColor = ConsoleColor.Black;
+            if (Bus.Driver == this)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+            }
+            if(busInputLine.State)
+            {
+                Console.ForegroundColor = ConsoleColor.Blue;
+            }
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y);
             Console.Write("|-----------------------|");
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
-            Console.Write(String.Format("{0} - {1}", id.ToString(), Value));
+            Console.Write("|                       |");
+            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
+            Console.Write(String.Format("|{0} - 0x{1:X2}", id.ToString(), Value));
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 2);
             Console.Write("|-----------------------|");
         }

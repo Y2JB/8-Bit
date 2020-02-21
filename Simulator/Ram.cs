@@ -9,12 +9,13 @@ namespace Simulator
     public class Ram : IMemoryController
     {
         // We use a 1K RAM chip
-        private MemoryStream mem = new MemoryStream(1024);
+        private byte[] mem = new byte[1024];
         private IRegister mar;
 
         ControlLine busOutputLine;
 
         public IBus Bus { get; private set; }
+        public string Name { get { return "RAM"; } }    
 
         public byte Value { get { return Read(); } }
 
@@ -49,23 +50,33 @@ namespace Simulator
         public byte Read()
         {
             byte address = (byte) mar.Value;
-            return mem.GetBuffer()[address];
+            return mem[address];
         }
 
 
         public void Write(byte value)
         {
             byte address = (byte)mar.Value;
-            mem.GetBuffer()[address] = value;
+            mem[address] = value;
         }
 
 
         public void OutputState()
         {
+            Console.ForegroundColor = ConsoleColor.Black;
+            if (Bus.Driver == this)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+            }
+
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y);
             Console.Write("|-----------------------|");
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
-            Console.Write(String.Format("RAM - {0}", Value));
+            Console.Write("|                       |");
+            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
+            Console.Write(String.Format("|RAM - 0x{0:X2}", Value));
+            Console.SetCursorPosition(consoleXY.X+25, consoleXY.Y + 1);
+            Console.Write("|");
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 2);
             Console.Write("|-----------------------|");
         }

@@ -12,6 +12,7 @@ namespace Simulator
         IRegister bReg;
 
         public IBus Bus { get; private set; }
+        public string Name { get { return "ALU"; } }
 
         public bool Carry { get { return false; } }
         public bool Zero { get { return false; } }
@@ -50,10 +51,18 @@ namespace Simulator
 
         public void OutputState()
         {
+            Console.ForegroundColor = ConsoleColor.Black;
+            if (Bus.Driver == this)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+            }
+
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y);
             Console.Write("|-----------------------|");
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
-            Console.Write(String.Format("ALU - {0} Zero {1} Carry {2}", Value, Zero, Carry));
+            Console.Write("|                       |");
+            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
+            Console.Write(String.Format("|ALU - 0x{0:X2} Z {1} C {2}", Value, Zero, Carry));
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 2);
             Console.Write("|-----------------------|");
         }

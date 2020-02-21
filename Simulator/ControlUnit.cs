@@ -60,7 +60,7 @@ namespace Simulator
             int microStep = MicrostepCounter.Value;
             int flags = 0;
 
-            UInt16 address = (UInt16)(((UInt16)(InstructionRegister.Value) << 10) | regValue << 7 | flags << 4 | microStep);
+            UInt16 address = (UInt16)(((UInt16)(InstructionRegister.Value) << 7) | flags << 3 | microStep);
 
             UInt32 controlWord = (UInt32) ((microcodeEeprom2[address] << 16) | (microcodeEeprom1[address] << 8) | microcodeEeprom0[address]);
 
@@ -87,6 +87,8 @@ namespace Simulator
         {
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y);
             Console.Write("|---------------------------------------------------------------------|");
+            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
+            Console.Write("                                                                       ");
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
             foreach (var line in controlLines)
             {

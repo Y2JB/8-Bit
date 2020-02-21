@@ -9,13 +9,14 @@ namespace Simulator
     public class Rom : IMemoryController
     {
         // We use a 256 kbit ROM chip
-        private MemoryStream mem = new MemoryStream(32 * 1024);
+        private byte[] mem = new byte[32 * 1024];
         private IRegister mar;
 
         ControlLine busOutputLine;
         ControlLine romBank1Line;
 
         public IBus Bus { get; private set; }
+        public string Name { get { return "ROM"; } }
 
         public byte Value { get { return Read(); } }
 
@@ -47,20 +48,23 @@ namespace Simulator
             };
         }
 
+
         // Used to load code
         public void Load(MemoryStream eepromContents)
         {
-            eepromContents.CopyTo(mem);
+            mem = eepromContents.ToArray();
         }
+
 
         public byte Read()
         {
             int address = (int) mar.Value;
             if(romBank1Line.State)
             {
-                address = address | 0x10;
+                address = address | 0x100;
             }
-            return mem.GetBuffer()[address];
+            byte value = mem[address];
+            return value;
         }
 
 
@@ -69,12 +73,21 @@ namespace Simulator
             throw new InvalidOperationException();
         }
 
+
         public void OutputState()
         {
+            Console.ForegroundColor = ConsoleColor.Black;
+            if (Bus.Driver == this)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+            }
+
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y);
             Console.Write("|-----------------------|");
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
-            Console.Write(String.Format("ROM - {0}", Value));
+            Console.Write("|                       |");
+            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
+            Console.Write(String.Format("|ROM - 0x{0:X2}", Value));
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 2);
             Console.Write("|-----------------------|");
         }

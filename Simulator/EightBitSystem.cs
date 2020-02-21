@@ -29,18 +29,20 @@ namespace Simulator
         public EightBitSystem()
         {
             int leftPrint = 0;
-            int rightPrint = Console.WindowWidth - 30;
+            int rightPrint = Console.WindowWidth - 29;
             int consoleHeight = Console.WindowHeight;
             //Console.WindowHeight = 40;
             int moduleHeight = 3;
 
             this.Clock = new Clock();
+            this.Clock.consoleXY = new Point(leftPrint, 0);
 
             this.ControlUnit = new ControlUnit(this.Clock);
             this.ControlUnit.consoleXY = new Point(leftPrint, 6 * moduleHeight);
 
 
-            this.Bus = new Bus();          
+            this.Bus = new Bus();
+            this.Bus.consoleXY = new Point(25, 0);
 
 
             this.A = new Register(SystemRegister.A, this.Clock, this.Bus, this.ControlUnit);
@@ -86,18 +88,18 @@ namespace Simulator
             this.Alu.consoleXY = new Point(rightPrint, 2 * moduleHeight);
 
             ConsoleKeyInfo key;
-
-
             do
             {
                 // Left modules
+                this.Clock.OutputState();
                 Mar.OutputState();
                 Ram.OutputState();
                 Rom.OutputState();
                 Ir.OutputState();
                 IrParam.OutputState();
 
-                // TODO BUS
+                // BUS
+                this.Bus.OutputState();
 
                 // Right modules
                 A.OutputState();

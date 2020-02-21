@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace Simulator
 {
@@ -9,6 +10,9 @@ namespace Simulator
         void Step();
 
         List<IClockConnectedComponent> clockConnectedComponents { get; }
+
+        Point consoleXY { get; set; }
+        void OutputState();
     }
 
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using EightBitSystem;
 
 namespace Simulator
@@ -14,7 +15,10 @@ namespace Simulator
             Stepped
         }
 
+        public Point consoleXY { get; set; }
+
         int frequencyHz;
+        int cycleCount;
         Mode mode;
         //ControlLine HltLine;
 
@@ -31,6 +35,8 @@ namespace Simulator
 
         public void Step()
         {
+            cycleCount++;
+
             foreach(IClockConnectedComponent component in clockConnectedComponents)
             {
                 component.OnRisingEdge();
@@ -42,7 +48,20 @@ namespace Simulator
             }
         }
 
-      
+
+
+        public void OutputState()
+        {
+            Console.SetCursorPosition(consoleXY.X, consoleXY.Y);
+            Console.Write("|-----------------------|");
+            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
+            Console.Write("|                       |");
+            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
+            Console.Write(String.Format("|Clock. Cycle - {0}", cycleCount));
+            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 2);
+            Console.Write("|-----------------------|");
+        }
+
     }
 
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 
 namespace Simulator
 {
@@ -12,6 +13,9 @@ namespace Simulator
 
         // Who is driving the bus?
         IBusConnectedComponent Driver { get; set; }
+
+        Point consoleXY { get; set; }
+        void OutputState();
     }
 
 }

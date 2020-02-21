@@ -14,19 +14,20 @@ namespace Simulator
         public byte Value { get; private set; }
 
         public IBus Bus { get; private set; }
+        public string Name { get { return "PC"; } }
 
         public Point consoleXY { get; set; }
 
         ControlLine busOutputLine;
         ControlLine countEnableLine;
-        ControlLine loadLine;
+        ControlLine busInputLine;
 
         public ProgramCounter(IClock clock, IBus bus, IControlUnit controlUnit)
         {
             this.Bus = bus;
             busOutputLine = controlUnit.GetControlLine(ControlLineId.PC_OUT);
             countEnableLine = controlUnit.GetControlLine(ControlLineId.PC_ENABLE);
-            loadLine = controlUnit.GetControlLine(ControlLineId.PC_IN);
+            busInputLine = controlUnit.GetControlLine(ControlLineId.PC_IN);
             clock.clockConnectedComponents.Add(this);
 
             // Setup the callback for when the bus output line goes high or low. Depending on which, we either start or stop driving the bus
@@ -54,7 +55,7 @@ namespace Simulator
 
         public void OnRisingEdge()
         {
-            if(loadLine.State == true)
+            if(busInputLine.State == true)
             {
                 Value = Bus.Value;
                 return;
@@ -83,10 +84,22 @@ namespace Simulator
 
         public void OutputState()
         {
+            Console.ForegroundColor = ConsoleColor.Black;
+            if (Bus.Driver == this)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+            }
+            if (busInputLine.State)
+            {
+                Console.ForegroundColor = ConsoleColor.Blue;
+            }
+
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y);
             Console.Write("|-----------------------|");
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
-            Console.Write(String.Format("PC - {0}", Value));
+            Console.Write("|                       |");
+            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
+            Console.Write(String.Format("|PC - 0x{0:X2}", Value));
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 2);
             Console.Write("|-----------------------|");
         }
