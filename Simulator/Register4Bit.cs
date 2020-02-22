@@ -4,7 +4,7 @@ using EightBitSystem;
 
 namespace Simulator
 {
-    public class Register4Bit : IRegister
+    public class FlagsRegister4Bit : IRegister
     {
         SystemRegister id;
 
@@ -18,30 +18,22 @@ namespace Simulator
 
         ControlLine updateFlagsLine;
 
+        IControlUnit controlUnit;
+
         IAlu alu;
 
-        public Register4Bit(SystemRegister id, IClock clock, IControlUnit controlUnit, IAlu alu)
+        public FlagsRegister4Bit(SystemRegister id, IClock clock, IControlUnit controlUnit, IAlu alu)
         {
             this.id = id;
             Value = 0;
+
+            this.controlUnit = controlUnit;
 
             this.alu = alu;
 
             clock.clockConnectedComponents.Add(this);
 
             updateFlagsLine = controlUnit.GetControlLine(ControlLineId.UPDATE_FLAGS);
-        }
-
-
-        public void SetBit(int bit, bool value)
-        {
-            if (bit < 0 || bit > 3)
-            {
-                throw new ArgumentException("Bit must be 0 - 3");
-            }
-
-            byte mask = (byte) (1 << bit);
-            Value |= mask;
         }
 
 
@@ -75,6 +67,12 @@ namespace Simulator
                     throw new ArgumentException("Flags cannot exceed 4 bits");
                 }
                 Value = val;
+
+                // The flags being updated should be immedietley refelected by the control unit
+                if (id == SystemRegister.FLAGS)
+                {
+                    controlUnit.OnControlStateUpdated();
+                }
             }
         }
 

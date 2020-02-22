@@ -20,18 +20,17 @@ namespace Simulator
 
         public Point consoleXY { get; set; }
 
-        public ControlUnit(IClock clock)
+        public ControlUnit()
         {           
-            clock.clockConnectedComponents.Add(this);
             CreateControlLines();
         }
 
 
         public void LoadMicrocode()
         {
-            microcodeEeprom0 = new MemoryStream(File.ReadAllBytes("/Users/jonbellamy/Projects/8-Bit/Sample Microcode/Microcode-Bank0.bin")).ToArray();
-            microcodeEeprom1 = new MemoryStream(File.ReadAllBytes("/Users/jonbellamy/Projects/8-Bit/Sample Microcode/Microcode-Bank1.bin")).ToArray();
-            microcodeEeprom2 = new MemoryStream(File.ReadAllBytes("/Users/jonbellamy/Projects/8-Bit/Sample Microcode/Microcode-Bank2.bin")).ToArray();
+            microcodeEeprom0 = new MemoryStream(File.ReadAllBytes("../../../../Sample Microcode/Microcode-Bank0.bin")).ToArray();
+            microcodeEeprom1 = new MemoryStream(File.ReadAllBytes("../../../../Sample Microcode/Microcode-Bank1.bin")).ToArray();
+            microcodeEeprom2 = new MemoryStream(File.ReadAllBytes("../../../../Sample Microcode/Microcode-Bank2.bin")).ToArray();
         }
 
 
@@ -50,12 +49,10 @@ namespace Simulator
         }
 
 
-        public void OnRisingEdge()
-        {
-        }
-
-
-        public void OnFallingEdge()
+        // Our control address / lookup is based on 15 bits the Instruction and Register it operateson (8 bits) the flags (4 bits) and the microstep (3 bits).
+        // If any one of them changes we call this to immediately update the control unit. In hardware the control unit is not directly connected to the clock, it is
+        // just hardwired to the 3 address inputs.
+        public void OnControlStateUpdated()
         {
             int microStep = MicrostepCounter.Value;
             int flags = FlagsRegister.Value;
@@ -85,11 +82,14 @@ namespace Simulator
 
         public void OutputState()
         {
+            Console.ForegroundColor = ConsoleColor.Black;
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y);
             Console.Write("|---------------------------------------------------------------------|");
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
+            Console.Write(String.Format("MicroStep - {0}", MicrostepCounter.Value));
+            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 2);
             Console.Write("                                                                       ");
-            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
+            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 2);
             foreach (var line in controlLines)
             {
                 if (line.Value.State)
@@ -97,8 +97,6 @@ namespace Simulator
                     Console.Write(line.Key.ToString() + " ");
                 }
             }
-            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 2);
-            Console.Write(String.Format("MicroStep - {0}", MicrostepCounter.Value));
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 3);
             Console.Write("|---------------------------------------------------------------------|");
 

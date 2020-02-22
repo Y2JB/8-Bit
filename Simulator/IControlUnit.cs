@@ -7,7 +7,7 @@ using EightBitSystem;
 namespace Simulator
 {
 
-    public interface IControlUnit : IClockConnectedComponent
+    public interface IControlUnit
     {
         IRegister InstructionRegister { get; set; }
         IRegister FlagsRegister { get; set; }
@@ -15,6 +15,7 @@ namespace Simulator
         ControlLine GetControlLine(ControlLineId lineId);
         void LoadMicrocode();
 
+        void OnControlStateUpdated();
 
         Point consoleXY { get; set; }
         void OutputState();

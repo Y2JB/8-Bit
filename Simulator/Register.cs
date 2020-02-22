@@ -20,11 +20,15 @@ namespace Simulator
         ControlLine busOutputLine;
         ControlLine busInputLine;
 
+        IControlUnit controlUnit;
+
         public Register(SystemRegister id, IClock clock, IBus bus, IControlUnit controlUnit)
         {
             this.id = id;
             Bus = bus;
             Value = 0;
+
+            this.controlUnit = controlUnit;
 
             clock.clockConnectedComponents.Add(this);
 
@@ -86,18 +90,6 @@ namespace Simulator
         }
 
 
-        public void SetBit(int bit, bool value)
-        {
-            if (bit < 0 || bit > 7)
-            {
-                throw new ArgumentException("Bit must be 0 - 7");
-            }
-
-            byte mask = (byte) (1 << bit);
-            Value |= mask;
-        }
-
-
         public bool GetBit(int bit)
         {
             if(bit < 0 ||  bit > 7)
@@ -113,6 +105,12 @@ namespace Simulator
         public void Reset()
         {
             Value = 0;
+
+            // The IR being updated should be immedietley refelected by the control unit
+            if (id == SystemRegister.IR)
+            {
+                controlUnit.OnControlStateUpdated();
+            }
         }
 
 
@@ -121,6 +119,12 @@ namespace Simulator
             if(busInputLine != null && busInputLine.State == true)
             {
                 Value = Bus.Value;
+
+                // The IR being updated should be immedietley refelected by the control unit
+                if(id == SystemRegister.IR)
+                {
+                    controlUnit.OnControlStateUpdated();
+                }
                 return;
             }
 

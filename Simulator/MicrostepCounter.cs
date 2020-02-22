@@ -15,15 +15,20 @@ namespace Simulator
 
         public Point consoleXY { get; set; }
 
+        IControlUnit controlUnit;
 
-        public MicrostepCounter(IClock clock)
+        public MicrostepCounter(IClock clock, IControlUnit controlUnit)
         {
             clock.clockConnectedComponents.Add(this);
+            this.controlUnit = controlUnit;
         }
 
         public void Reset()
         {
             Value = 0;
+
+            // The microstep being updated should be immedietley refelected by the control unit
+            controlUnit.OnControlStateUpdated();
         }
 
 
@@ -41,6 +46,9 @@ namespace Simulator
             {
                 Value = 0;
             }
+
+            // The microstep being updated should be immedietley refelected by the control unit
+            controlUnit.OnControlStateUpdated();
         }
 
 

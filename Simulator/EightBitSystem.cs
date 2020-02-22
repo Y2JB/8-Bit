@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Threading;
 using EightBitSystem;
 
 namespace Simulator
@@ -30,20 +31,18 @@ namespace Simulator
         {
             int leftPrint = 0;
             int rightPrint = Console.WindowWidth - 29;
-            int consoleHeight = Console.WindowHeight;
             //Console.WindowHeight = 40;
             int moduleHeight = 3;
 
-            this.Clock = new Clock();
-            this.Clock.consoleXY = new Point(leftPrint, 0);
-
-            this.ControlUnit = new ControlUnit(this.Clock);
+            this.ControlUnit = new ControlUnit();
             this.ControlUnit.consoleXY = new Point(leftPrint, 6 * moduleHeight);
 
 
+            this.Clock = new Clock(this.ControlUnit);
+            this.Clock.consoleXY = new Point(leftPrint, 0);
+
             this.Bus = new Bus();
             this.Bus.consoleXY = new Point(25, 0);
-
 
             this.A = new Register(SystemRegister.A, this.Clock, this.Bus, this.ControlUnit);
             this.A.consoleXY = new Point(rightPrint, 1 * moduleHeight);
@@ -69,10 +68,10 @@ namespace Simulator
             this.Alu = new Alu(this.ControlUnit, this.Bus, this.A, this.B);
             this.Alu.consoleXY = new Point(rightPrint, 2 * moduleHeight);
 
-            this.Flags = new Register4Bit(SystemRegister.FLAGS, this.Clock, this.ControlUnit, this.Alu);
+            this.Flags = new FlagsRegister4Bit(SystemRegister.FLAGS, this.Clock, this.ControlUnit, this.Alu);
             this.Flags.consoleXY = new Point(rightPrint, 4 * moduleHeight);
 
-            this.MicrostepCounter = new MicrostepCounter(this.Clock);
+            this.MicrostepCounter = new MicrostepCounter(this.Clock, this.ControlUnit);
 
             // load the microcode images
             ControlUnit.LoadMicrocode();
@@ -80,8 +79,7 @@ namespace Simulator
             ControlUnit.FlagsRegister = this.Flags;
             ControlUnit.MicrostepCounter = this.MicrostepCounter;
          
-            //string fn = "C:/Users/bellamj/source/repos/JonBellamy/8-Bit/Sample ASM/test.asm";
-            string romFile = "/Users/jonbellamy/Projects/8-Bit/Sample ASM/test.rom";
+            string romFile = "../../../../Sample ASM/test.rom";
             MemoryStream romContents = new MemoryStream(File.ReadAllBytes(romFile));
             this.Rom = new Rom(this.Bus, this.ControlUnit, this.Mar);
             this.Rom.consoleXY = new Point(leftPrint, 2 * moduleHeight);
@@ -90,8 +88,11 @@ namespace Simulator
             this.Ram = new Ram(this.Bus, this.ControlUnit, this.Mar);
             this.Ram.consoleXY = new Point(leftPrint, 3 * moduleHeight);
 
+            // Start the computer with the control until poiting at the first control word
+            this.ControlUnit.OnControlStateUpdated();
+
             ConsoleKeyInfo key;
-            do
+            while (true)
             {
                 // Left modules
                 this.Clock.OutputState();
@@ -117,16 +118,87 @@ namespace Simulator
                 ControlUnit.OutputState();
 
                 Console.SetCursorPosition(0, 23);
-                Console.Write("[S]tep [R]un E[x]it");
+                Console.Write(String.Format("[S]tep - [R]un - [N]ext Asm Instruction - Clock Freq {0}hz [+-] - E[x]it", this.Clock.FrequencyHz));
 
-                key = Console.ReadKey(true);
 
-                if (key.Key == ConsoleKey.S)
+                if (this.Clock.ClockMode == IClock.Mode.Stepped ||
+                    (this.Clock.ClockMode == IClock.Mode.Running && Console.KeyAvailable))
                 {
+                    key = Console.ReadKey(true);
+
+                    int freq;
+
+                    switch (key.Key)
+                    {
+                        case ConsoleKey.S:
+                            if (this.Clock.ClockMode == IClock.Mode.Stepped)
+                            {
+                                this.Clock.Step();
+                            }
+                            else
+                            {
+                                this.Clock.ClockMode = IClock.Mode.Stepped;
+                            }
+                            break;
+
+                        case ConsoleKey.R:
+                            if (this.Clock.ClockMode != IClock.Mode.Running)                            
+                            {
+                                this.Clock.ClockMode = IClock.Mode.Running;
+                            }
+                            break;
+
+                        case ConsoleKey.N:
+                            this.Clock.Step();
+                            while (this.ControlUnit.MicrostepCounter.Value != 3 && !this.Clock.IsHalted)
+                            {
+                                Thread.Sleep(1);
+                                this.Clock.Step();
+                            }
+                            break;
+
+                        case ConsoleKey.Add:
+                            freq = this.Clock.FrequencyHz;
+                            if (freq <= 20) freq++;
+                            else if (freq <= 100) freq += 5;
+                            else freq += 50;
+                            if (freq > 1000) freq = 1000;
+                            this.Clock.FrequencyHz = freq;
+                            break;
+
+                        case ConsoleKey.Subtract:
+                            freq = this.Clock.FrequencyHz;
+                            if (freq <= 20) freq--;
+                            else if (freq <= 100) freq -= 5;
+                            else freq -= 50;
+                            if (freq < 1) freq = 1;
+                            this.Clock.FrequencyHz = freq;
+                            break;
+
+
+                        case ConsoleKey.X:
+                            return;
+                    }
+
+                    if (this.Clock.ClockMode == IClock.Mode.Stepped)
+                    {
+                        if (key.Key == ConsoleKey.S)
+                        {
+
+                        }
+                    }
+                    else if (this.Clock.ClockMode == IClock.Mode.Running)
+                    {
+
+                    }
+                }
+
+                if (this.Clock.ClockMode == IClock.Mode.Running)
+                {
+                    Thread.Sleep(1000 / this.Clock.FrequencyHz);
                     this.Clock.Step();
                 }
             }
-            while (key.Key != ConsoleKey.X);
         }
 
             

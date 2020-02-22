@@ -13,6 +13,7 @@ namespace Simulator
         private IRegister mar;
 
         ControlLine busOutputLine;
+        ControlLine busInputLine;
 
         public IBus Bus { get; private set; }
         public string Name { get { return "RAM"; } }    
@@ -26,6 +27,8 @@ namespace Simulator
         {
             this.Bus = bus;
             busOutputLine = controlUnit.GetControlLine(ControlLineId.RAM_OUT);
+            busInputLine = controlUnit.GetControlLine(ControlLineId.RAM_IN);
+
             this.mar = mar;
 
             // Setup the callback for when the bus output line goes high or low. Depending on which, we either start or stop driving the bus
@@ -41,6 +44,16 @@ namespace Simulator
                     {
                         Bus.Driver = null;
                     }
+                }
+                return true;
+            };
+
+            // Setup the callback for when the bus output line goes high or low. Depending on which, we either start or stop driving the bus
+            busInputLine.onTransition = () =>
+            {
+                if (busInputLine.State == true)
+                {
+                    Write(Bus.Value);
                 }
                 return true;
             };
@@ -68,7 +81,10 @@ namespace Simulator
             {
                 Console.ForegroundColor = ConsoleColor.Red;
             }
-
+            if (busInputLine != null && busInputLine.State)
+            {
+                Console.ForegroundColor = ConsoleColor.Blue;
+            }
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y);
             Console.Write("|-----------------------|");
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);

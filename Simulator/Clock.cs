@@ -2,39 +2,44 @@
 using System.Collections.Generic;
 using System.Drawing;
 using EightBitSystem;
+using static Simulator.IClock;
 
 namespace Simulator
 {
 
     public class Clock : IClock
     {
-        public enum Mode
-        {
-            Halted,
-            Running,
-            Stepped
-        }
+        
+        public Mode ClockMode { get; set; }
 
         public Point consoleXY { get; set; }
+        public int FrequencyHz { get; set; }      
+        public bool IsHalted { get { return hltLine.State;  } }
 
-        int frequencyHz;
+        ControlLine hltLine { get; set; }
         int cycleCount;
-        Mode mode;
-        //ControlLine HltLine;
+        
 
         public List<IClockConnectedComponent> clockConnectedComponents { get; private set; }
 
-        public Clock()
+        public Clock(IControlUnit controlUnit)
         {
             //HltLine = controlUnit.GetControlLine(ControlLineId.HLT);
-            frequencyHz = 1;
-            mode = Mode.Halted;
+            FrequencyHz = 1;
+            ClockMode = Mode.Stepped;
 
             clockConnectedComponents = new List<IClockConnectedComponent>();
+
+            hltLine = controlUnit.GetControlLine(ControlLineId.HLT);
         }
 
         public void Step()
         {
+            if(hltLine.State == true)
+            {
+                return;
+            }
+
             cycleCount++;
 
             foreach(IClockConnectedComponent component in clockConnectedComponents)

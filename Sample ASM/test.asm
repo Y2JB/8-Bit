@@ -1,28 +1,28 @@
 // Setup our data and our loop counters
 MOV A 0
-STR A 0x00
+STR A 0x0A
 
-MOV B 0x2F
-STR B 0x01
+MOV B 0x05
+STR B 0x0C
 
 
-// Count to 47
+// Count to 5
 loop:
 
 // Add 1 to A, store the result in memory and output the current value
-LDR A 0x00
+LDR A 0x0A
 MOV B 1
 ADD
-STR A 0x00
+STR A 0x0A
 OUT A
 
 // Load our loop value and decrement it
-LDR A 0x01
+LDR A 0x0C
 MOV B 1
 SUB
 
 // Save our loop counter
-STR A 0x01
+STR A 0x0C
 
 JNZ loop:
 

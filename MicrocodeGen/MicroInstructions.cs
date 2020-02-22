@@ -244,7 +244,8 @@ namespace MicrocodeGen
                 int step = GenerateFetchMicrocode(opCode, null, flags);
 
                 UInt16 address = GenerateMicroInstructionAddress(opCode, null, flags, step++);
-                UInt32 controlLines = (UInt32)(ControlLineId.UPDATE_FLAGS);
+                UInt32 controlLines = (UInt32)(ControlLineId.UPDATE_FLAGS) | (UInt32)(ControlLineId.SUBTRACT);
+                WriteEepromBuffers(address, controlLines);
 
                 address = GenerateMicroInstructionAddress(opCode, null, flags, step++);
                 controlLines = (UInt32)(ControlLineId.SUM_OUT) | (UInt32)(ControlLineId.A_REG_IN) | (UInt32)(ControlLineId.SUBTRACT);
@@ -328,7 +329,7 @@ namespace MicrocodeGen
                 UInt32 controlLines = 0;
 
                 // Only jump if the right flag is set, ptherwise it's a NOP
-                if ((flags | (byte)AluFlags.Zero) == 1)
+                if ((flags & (byte)AluFlags.Zero) != 0)
                 {
                     controlLines = (UInt32)(ControlLineId.PC_IN) | (UInt32)(ControlLineId.IR_PARAM_OUT);
                 }
@@ -351,7 +352,7 @@ namespace MicrocodeGen
                 UInt32 controlLines = 0;
 
                 // Only jump if the right flag is set, ptherwise it's a NOP
-                if ((flags | (byte) AluFlags.Zero) == 0)
+                if ((flags & (byte) AluFlags.Zero) == 0)
                 {
                     controlLines = (UInt32)(ControlLineId.PC_IN) | (UInt32)(ControlLineId.IR_PARAM_OUT);
                 }
@@ -374,7 +375,7 @@ namespace MicrocodeGen
                 UInt32 controlLines = 0;
 
                 // Only jump if the right flag is set, ptherwise it's a NOP
-                if ((flags | (byte)AluFlags.Carry) == 1)
+                if ((flags & (byte)AluFlags.Carry) != 0)
                 {
                     controlLines = (UInt32)(ControlLineId.PC_IN) | (UInt32)(ControlLineId.IR_PARAM_OUT);
                 }
@@ -447,7 +448,7 @@ namespace MicrocodeGen
 
 
         // The control lines that will be switched on are contained in the image at an address generated here
-        // We currently generate 11 bit addresses (though we have room for 15 bit addr) They are generated out of 'opCode Param microStep', with least significant bit on the right
+        // We currently generate 15 bit addresses (and we only have room for 15 bit addr) They are generated out of 'opCode Param microStep', with least significant bit on the right
         // CCCCCPPPFFFFSSS
         private UInt16 GenerateMicroInstructionAddress(OpCode opCode, Nullable<GeneralPurposeRegisterId> reg, byte flags, int microStep)
         {
@@ -465,7 +466,7 @@ namespace MicrocodeGen
 
             UInt16 regValue = (UInt16) (reg.HasValue ? reg.Value : 0);
 
-            UInt16 address = (UInt16)(((UInt16)(opCode) << 10) | regValue << 7 | flags << 4 | microStep);
+            UInt16 address = (UInt16)(((UInt16)(opCode) << 10) | regValue << 7 | flags << 3 | microStep);
 
             // Our Eeproms only have 15 address lines so we cannot address more than this
             if (address > 32767)

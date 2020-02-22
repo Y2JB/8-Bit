@@ -35,9 +35,8 @@ namespace Simulator
                 {
                     val = (byte) (aReg.Value + bReg.Value);
                 }
-                Zero = (val == 0);
-                Carry = (val > 255 || val < -127);
-               
+                Zero = (val == 0);              
+                Carry = (val > 255 || val < -127);               
                 return (byte) val;  
             }
         }
