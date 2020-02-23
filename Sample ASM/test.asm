@@ -16,15 +16,10 @@ ADD
 STR A 0x0A
 OUT A
 
-// Load our loop value and decrement it
-LDR A 0x0C
-MOV B 1
-SUB
+// Compare our A value with our loop/count value
+CMP 0x0C
 
-// Save our loop counter
-STR A 0x0C
-
-JNZ loop:
+JNE loop:
 
 
 // TODO: Output the first 14 entires of the Fibonacci Sequence

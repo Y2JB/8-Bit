@@ -29,14 +29,17 @@ namespace Simulator
                 int val;
                 if (subLine.State == true)
                 {
-                    val = (byte) (aReg.Value - bReg.Value);
+                    val = aReg.Value - bReg.Value;
                 }
                 else
                 {
-                    val = (byte) (aReg.Value + bReg.Value);
+                    val = aReg.Value + bReg.Value;
                 }
                 Zero = (val == 0);              
-                Carry = (val > 255 || val < -127);               
+                Carry = (val > 255 || val < 0);
+
+                if (Carry) val >>= 8;
+
                 return (byte) val;  
             }
         }

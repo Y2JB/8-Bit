@@ -47,8 +47,11 @@ namespace asm
             // Bit of a hack for jump instructions
             // JMP has one param but the parm has to be forced into the 8 bit rparam
             if (instruction._OpCode == OpCode.JMP ||
+                instruction._OpCode == OpCode.JE ||
+                instruction._OpCode == OpCode.JNE ||
                 instruction._OpCode == OpCode.JZ ||
-                instruction._OpCode == OpCode.JNZ)
+                instruction._OpCode == OpCode.JNZ ||
+                instruction._OpCode == OpCode.CMP)
             {
                 rParam = lParam;
                 lParam = null;

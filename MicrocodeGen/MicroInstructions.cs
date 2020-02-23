@@ -260,42 +260,37 @@ namespace MicrocodeGen
 
             // NB: This instruction takes the maximum of 8 uops (micro instructions)!
 
-            foreach (GeneralPurposeRegisterId reg in Enum.GetValues(typeof(GeneralPurposeRegisterId)))
+            for (byte flags = 0; flags <= maxFlagsValue; flags++)
             {
-                UInt32 regIn = MapRegisterToControlLineIn(reg);
+                int step = GenerateFetchMicrocode(opCode, null, flags);
 
-                for (byte flags = 0; flags <= maxFlagsValue; flags++)
-                {
-                    int step = GenerateFetchMicrocode(opCode, reg, flags);
+                UInt32 controlLines = 0;
+                UInt16 address = 0;
 
-                    UInt32 controlLines = 0;
-                    UInt16 address = 0;
+                controlLines = (UInt32)(ControlLineId.IR_PARAM_OUT) | (UInt32)(ControlLineId.MAR_IN);
+                address = GenerateMicroInstructionAddress(opCode, null, flags, step++);
+                WriteEepromBuffers(address, controlLines);
 
-                    controlLines = (UInt32)(ControlLineId.IR_PARAM_OUT) | (UInt32)(ControlLineId.MAR_IN);
-                    address = GenerateMicroInstructionAddress(opCode, reg, flags, step++);
-                    WriteEepromBuffers(address, controlLines);
+                // Store B for later, backup in the IR Param (very cheeky)
+                controlLines = (UInt32)(ControlLineId.B_REG_OUT) | (UInt32)(ControlLineId.IR_PARAM_IN);
+                address = GenerateMicroInstructionAddress(opCode, null, flags, step++);
+                WriteEepromBuffers(address, controlLines);
 
-                    // Store B for later, backup in the IR Param (very cheeky)
-                    controlLines = (UInt32)(ControlLineId.B_REG_OUT) | (UInt32)(ControlLineId.IR_PARAM_IN);
-                    address = GenerateMicroInstructionAddress(opCode, reg, flags, step++);
-                    WriteEepromBuffers(address, controlLines);
+                // Fetch the value to be compared
+                controlLines = (UInt32)(ControlLineId.RAM_OUT) | (UInt32)(ControlLineId.B_REG_IN);
+                address = GenerateMicroInstructionAddress(opCode, null, flags, step++);
+                WriteEepromBuffers(address, controlLines);
 
-                    // Fetch the value to be compared
-                    controlLines = (UInt32)(ControlLineId.RAM_OUT) | (UInt32)(ControlLineId.B_REG_IN);
-                    address = GenerateMicroInstructionAddress(opCode, reg, flags, step++);
-                    WriteEepromBuffers(address, controlLines);
+                // Subtract the compare values, and use the zero flag as an equal flag
+                address = GenerateMicroInstructionAddress(opCode, null, flags, step++);
+                controlLines = (UInt32)(ControlLineId.SUBTRACT) | (UInt32)(ControlLineId.UPDATE_FLAGS);
+                WriteEepromBuffers(address, controlLines);
 
-                    // Subtract the compare values, and use the zero flag as an equal flag
-                    address = GenerateMicroInstructionAddress(opCode, null, flags, step++);
-                    controlLines = (UInt32)(ControlLineId.SUBTRACT) | (UInt32)(ControlLineId.UPDATE_FLAGS);
-                    WriteEepromBuffers(address, controlLines);
-
-                    // Restore B
-                    controlLines = (UInt32)(ControlLineId.IR_PARAM_OUT) | (UInt32)(ControlLineId.B_REG_IN);
-                    address = GenerateMicroInstructionAddress(opCode, reg, flags, step++);
-                    WriteEepromBuffers(address, controlLines);
-                }             
-            }
+                // Restore B
+                controlLines = (UInt32)(ControlLineId.IR_PARAM_OUT) | (UInt32)(ControlLineId.B_REG_IN);
+                address = GenerateMicroInstructionAddress(opCode, null, flags, step++);
+                WriteEepromBuffers(address, controlLines);
+            }                        
         }
 
 
