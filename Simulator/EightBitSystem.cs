@@ -128,7 +128,7 @@ namespace Simulator
                 ControlUnit.OutputState();
 
                 Console.SetCursorPosition(0, 23);
-                Console.Write(String.Format("[S]tep - [N]ext Asm Instruction - [R]un - Clock Freq {0}hz [+-] - Rese[t] - E[x]it", this.Clock.FrequencyHz));
+                Console.Write(String.Format("[S]tep - [N]ext Instruction - [R]un - Clock {0}hz [+-] - Rese[t] - E[x]it", this.Clock.FrequencyHz));
 
 
                 if ( this.Clock.ClockMode == IClock.Mode.Stepped ||
