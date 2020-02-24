@@ -32,8 +32,8 @@ namespace Simulator
 
             this.alu = alu;
 
-            clock.ClockConnectedComponents.Add(this);
-
+            clock.AddConnectedComponent(this);
+            
             updateFlagsLine = controlUnit.GetControlLine(ControlLineId.UPDATE_FLAGS);
         }
 

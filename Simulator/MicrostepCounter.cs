@@ -19,7 +19,7 @@ namespace Simulator
 
         public MicrostepCounter(IClock clock, IControlUnit controlUnit)
         {
-            clock.ClockConnectedComponents.Add(this);
+            clock.AddConnectedComponent(this);
             this.controlUnit = controlUnit;
         }
 

@@ -31,7 +31,7 @@ namespace Simulator
 
             this.controlUnit = controlUnit;
 
-            clock.ClockConnectedComponents.Add(this);
+            clock.AddConnectedComponent(this);
 
             switch (id)
             {

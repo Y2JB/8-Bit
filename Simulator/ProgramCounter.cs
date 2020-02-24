@@ -29,7 +29,7 @@ namespace Simulator
             busOutputLine = controlUnit.GetControlLine(ControlLineId.PC_OUT);
             countEnableLine = controlUnit.GetControlLine(ControlLineId.PC_ENABLE);
             busInputLine = controlUnit.GetControlLine(ControlLineId.PC_IN);
-            clock.ClockConnectedComponents.Add(this);
+            clock.AddConnectedComponent(this);
 
             // Setup the callback for when the bus output line goes high or low. Depending on which, we either start or stop driving the bus
             busOutputLine.onTransition = () =>

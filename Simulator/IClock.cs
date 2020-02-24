@@ -18,8 +18,8 @@ namespace Simulator
 
         void Step();
 
-        List<IClockConnectedComponent> ClockConnectedComponents { get; }
-
+        void AddConnectedComponent(IClockConnectedComponent component);
+        
         Point ConsoleXY { get; set; }
         void OutputState();
     }

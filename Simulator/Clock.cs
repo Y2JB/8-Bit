@@ -18,9 +18,8 @@ namespace Simulator
 
         ControlLine HltLine { get; set; }
         int cycleCount;
-        
 
-        public List<IClockConnectedComponent> ClockConnectedComponents { get; private set; }
+        List<IClockConnectedComponent> clockConnectedComponents;
 
         public Clock(IControlUnit controlUnit)
         {
@@ -28,10 +27,17 @@ namespace Simulator
             FrequencyHz = 1;
             ClockMode = Mode.Stepped;
 
-            ClockConnectedComponents = new List<IClockConnectedComponent>();
+            clockConnectedComponents = new List<IClockConnectedComponent>();
 
             HltLine = controlUnit.GetControlLine(ControlLineId.HLT);
         }
+
+
+        public void AddConnectedComponent(IClockConnectedComponent component)
+        {
+            clockConnectedComponents.Add(component);
+        }
+
 
         public void Step()
         {
@@ -42,12 +48,12 @@ namespace Simulator
 
             cycleCount++;
 
-            foreach(IClockConnectedComponent component in ClockConnectedComponents)
+            foreach(IClockConnectedComponent component in clockConnectedComponents)
             {
                 component.OnRisingEdge();
             }
 
-            foreach (IClockConnectedComponent component in ClockConnectedComponents)
+            foreach (IClockConnectedComponent component in clockConnectedComponents)
             {
                 component.OnFallingEdge();
             }
