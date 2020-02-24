@@ -19,7 +19,9 @@ namespace Simulator
         byte[] microcodeEeprom1;
         byte[] microcodeEeprom2;
 
-        public Point consoleXY { get; set; }
+        UInt16 microcodeAddress;
+
+        public Point ConsoleXY { get; set; }
 
         public ControlUnit()
         {           
@@ -58,9 +60,9 @@ namespace Simulator
             int microStep = MicrostepCounter.Value;
             int flags = FlagsRegister.Value;
 
-            UInt16 address = (UInt16)(((UInt16)(InstructionRegister.Value) << 7) | flags << 3 | microStep);
+            microcodeAddress = (UInt16)(((UInt16)(InstructionRegister.Value) << 7) | flags << 3 | microStep);
 
-            UInt32 controlWord = (UInt32) ((microcodeEeprom2[address] << 16) | (microcodeEeprom1[address] << 8) | microcodeEeprom0[address]);
+            UInt32 controlWord = (UInt32) ((microcodeEeprom2[microcodeAddress] << 16) | (microcodeEeprom1[microcodeAddress] << 8) | microcodeEeprom0[microcodeAddress]);
 
             foreach (var line in controlLines)
             {
@@ -84,13 +86,15 @@ namespace Simulator
         public void OutputState()
         {
             Console.ForegroundColor = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? ConsoleColor.Black : ConsoleColor.White;
-            Console.SetCursorPosition(consoleXY.X, consoleXY.Y);
-            Console.Write("|---------------------------------------------------------------------|");
-            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
-            Console.Write(String.Format("MicroStep: {0}", MicrostepCounter.Value));
-            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 2);
-            Console.Write("                                                                       ");
-            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 2);
+            Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y);
+            Console.Write("|--------------------------------------------------------------------------|");
+            Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y + 1);
+            Console.Write("|                                                                          |");
+            Console.SetCursorPosition(ConsoleXY.X + 1, ConsoleXY.Y + 1);
+            Console.Write(String.Format("MicroStep: {0} - Microcode Address {1}", MicrostepCounter.Value, microcodeAddress));
+            Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y + 2);
+            Console.Write("|                                                                          |");
+            Console.SetCursorPosition(ConsoleXY.X + 1, ConsoleXY.Y + 2);            
             foreach (var line in controlLines)
             {
                 if (line.Value.State)
@@ -98,8 +102,8 @@ namespace Simulator
                     Console.Write(line.Key.ToString() + " ");
                 }
             }
-            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 3);
-            Console.Write("|---------------------------------------------------------------------|");
+            Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y + 3);
+            Console.Write("|--------------------------------------------------------------------------|");
 
         }
     }

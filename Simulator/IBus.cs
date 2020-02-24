@@ -14,7 +14,7 @@ namespace Simulator
         // Who is driving the bus?
         IBusConnectedComponent Driver { get; set; }
 
-        Point consoleXY { get; set; }
+        Point ConsoleXY { get; set; }
         void OutputState();
     }
 

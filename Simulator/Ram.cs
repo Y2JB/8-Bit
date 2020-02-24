@@ -21,7 +21,7 @@ namespace Simulator
 
         public byte Value { get { return Read(); } }
 
-        public Point consoleXY { get; set; }
+        public Point ConsoleXY { get; set; }
 
 
         public Ram(IBus bus, IControlUnit controlUnit, IRegister mar)
@@ -86,15 +86,13 @@ namespace Simulator
             {
                 Console.ForegroundColor = ConsoleColor.Blue;
             }
-            Console.SetCursorPosition(consoleXY.X, consoleXY.Y);
+            Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y);
             Console.Write("|-----------------------|");
-            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
+            Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y + 1);
             Console.Write("|                       |");
-            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
+            Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y + 1);
             Console.Write(String.Format("|RAM: 0x{0:X2}", Value));
-            Console.SetCursorPosition(consoleXY.X+25, consoleXY.Y + 1);
-            Console.Write("|");
-            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 2);
+            Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y + 2);
             Console.Write("|-----------------------|");
         }
 

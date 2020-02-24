@@ -8,7 +8,6 @@ namespace MicrocodeGen
 {
     public class MicroInstructions
     {
-        public int MaxStepCount { get; private set; }
         private MemoryStream memStreamEeprom0;
         private MemoryStream memStreamEeprom1;
         private MemoryStream memStreamEeprom2;
@@ -21,24 +20,16 @@ namespace MicrocodeGen
 
         public MicroInstructions()
         {
-            MaxStepCount = 5;
             memStreamEeprom0 = new MemoryStream(32 * 1024);
             memStreamEeprom1 = new MemoryStream(32 * 1024);
             memStreamEeprom2 = new MemoryStream(32 * 1024);
-            memStreamEeprom3 = new MemoryStream(32 * 1024);
-
-            Console.WriteLine("Generating Microcode");
-            GenerateMicrocode();
-            Console.WriteLine("Validating Microcode");
-            Validate();
-            WriteRoms();
-
-            Console.WriteLine(String.Format("{0} micro instructions written. Most steps {1}", microInstructionCount, mostSteps+1));
+            memStreamEeprom3 = new MemoryStream(32 * 1024);            
         }
 
 
-        private void GenerateMicrocode()
+        public void GenerateMicrocode()
         {
+            Console.WriteLine("Generating Microcode");
 
             // Any instruction generate a set of control words for every possible input param and cpu flags. It generates a LOT of microcode and
             // can almost certainly be optimized. 
@@ -540,15 +531,17 @@ namespace MicrocodeGen
         }
 
 
-        private void Validate()
+        public void Validate()
         {
+            Console.WriteLine("Validating Microcode");
+
             // Make sure max of 1 OUT flag is set per micro instruction
 
             // EEPROM 4 should be all zeroes
         }
 
 
-        private void WriteRoms()
+        public void WriteRoms()
         {
             Console.Write("Writing Microcode ROMs...");
             using (FileStream f0 = File.Create("Microcode-Bank0.bin"))
@@ -569,6 +562,8 @@ namespace MicrocodeGen
                 f3.Close();
             }
             Console.WriteLine("success");
+
+            Console.WriteLine(String.Format("{0} micro instructions written. Most steps {1}", microInstructionCount, mostSteps + 1));
         }
     }
 }

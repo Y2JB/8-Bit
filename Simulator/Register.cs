@@ -14,7 +14,7 @@ namespace Simulator
 
         public byte Value { get; private set; }
 
-        public Point consoleXY { get; set; }
+        public Point ConsoleXY { get; set; }
         
         public string BinarytValue { get { return Convert.ToString(Value, 2).PadLeft(8, '0'); } }
 
@@ -31,7 +31,7 @@ namespace Simulator
 
             this.controlUnit = controlUnit;
 
-            clock.clockConnectedComponents.Add(this);
+            clock.ClockConnectedComponents.Add(this);
 
             switch (id)
             {
@@ -157,11 +157,11 @@ namespace Simulator
             {
                 Console.ForegroundColor = ConsoleColor.Blue;
             }
-            Console.SetCursorPosition(consoleXY.X, consoleXY.Y);
+            Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y);
             Console.Write("|-----------------------|");
-            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
+            Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y + 1);
             Console.Write("|                       |");
-            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
+            Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y + 1);
             Console.Write(String.Format("|{0}: 0x{1:X2}", id.ToString(), Value));
 
             // Yes this should be done with inheritence...
@@ -176,7 +176,7 @@ namespace Simulator
                     Console.Write(String.Format(" {0}", reg.ToString()));
                 }
             }
-            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 2);
+            Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y + 2);
             Console.Write("|-----------------------|");
         }
 

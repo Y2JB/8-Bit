@@ -13,13 +13,13 @@ namespace Simulator
 
         public byte Value { get; private set; }
 
-        public Point consoleXY { get; set; }
+        public Point ConsoleXY { get; set; }
 
         IControlUnit controlUnit;
 
         public MicrostepCounter(IClock clock, IControlUnit controlUnit)
         {
-            clock.clockConnectedComponents.Add(this);
+            clock.ClockConnectedComponents.Add(this);
             this.controlUnit = controlUnit;
         }
 

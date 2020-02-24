@@ -17,7 +17,7 @@ namespace Simulator
         public IBus Bus { get; private set; }
         public string Name { get { return "PC"; } }
 
-        public Point consoleXY { get; set; }
+        public Point ConsoleXY { get; set; }
 
         ControlLine busOutputLine;
         ControlLine countEnableLine;
@@ -29,7 +29,7 @@ namespace Simulator
             busOutputLine = controlUnit.GetControlLine(ControlLineId.PC_OUT);
             countEnableLine = controlUnit.GetControlLine(ControlLineId.PC_ENABLE);
             busInputLine = controlUnit.GetControlLine(ControlLineId.PC_IN);
-            clock.clockConnectedComponents.Add(this);
+            clock.ClockConnectedComponents.Add(this);
 
             // Setup the callback for when the bus output line goes high or low. Depending on which, we either start or stop driving the bus
             busOutputLine.onTransition = () =>
@@ -101,13 +101,13 @@ namespace Simulator
                 Console.ForegroundColor = ConsoleColor.Blue;
             }
 
-            Console.SetCursorPosition(consoleXY.X, consoleXY.Y);
+            Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y);
             Console.Write("|-----------------------|");
-            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
+            Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y + 1);
             Console.Write("|                       |");
-            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
+            Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y + 1);
             Console.Write(String.Format("|PC: 0x{0:X2}", Value));
-            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 2);
+            Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y + 2);
             Console.Write("|-----------------------|");
         }
     }

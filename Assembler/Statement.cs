@@ -8,7 +8,7 @@ namespace asm
 {
     class Statement
     {
-        public Instruction instruction { get; private set; }
+        public Instruction Instruction { get; private set; }
         public InstructionParameter LeftParam { get; private set; }
         public InstructionParameter RightParam { get; private set; }
 
@@ -36,7 +36,7 @@ namespace asm
             }
 
             // Parse the op code and 2 params
-            instruction = new Instruction(LineNumber, components[0]);
+            Instruction = new Instruction(LineNumber, components[0]);
 
 
             // If params are passed a null string to parse they will default to 'unused' type and value of zero
@@ -46,12 +46,12 @@ namespace asm
 
             // Bit of a hack for jump instructions
             // JMP has one param but the parm has to be forced into the 8 bit rparam
-            if (instruction._OpCode == OpCode.JMP ||
-                instruction._OpCode == OpCode.JE ||
-                instruction._OpCode == OpCode.JNE ||
-                instruction._OpCode == OpCode.JZ ||
-                instruction._OpCode == OpCode.JNZ ||
-                instruction._OpCode == OpCode.CMP)
+            if (Instruction._OpCode == OpCode.JMP ||
+                Instruction._OpCode == OpCode.JE ||
+                Instruction._OpCode == OpCode.JNE ||
+                Instruction._OpCode == OpCode.JZ ||
+                Instruction._OpCode == OpCode.JNZ ||
+                Instruction._OpCode == OpCode.CMP)
             {
                 rParam = lParam;
                 lParam = null;
@@ -78,7 +78,7 @@ namespace asm
                 throw new Exception(String.Format("ERROR: Line {0} : Unknown register", LineNumber));
             }
 
-            switch (instruction._OpCode)
+            switch (Instruction._OpCode)
             {
                 case OpCode.OUT:
                     if(ParameterCount != 1)

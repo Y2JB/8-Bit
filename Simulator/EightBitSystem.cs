@@ -34,40 +34,40 @@ namespace Simulator
             int moduleHeight = 3;
 
             this.ControlUnit = new ControlUnit();
-            this.ControlUnit.consoleXY = new Point(leftPrint, 6 * moduleHeight);
+            this.ControlUnit.ConsoleXY = new Point(leftPrint, 6 * moduleHeight);
 
             this.Clock = new Clock(this.ControlUnit);
-            this.Clock.consoleXY = new Point(leftPrint, 0);
+            this.Clock.ConsoleXY = new Point(leftPrint, 0);
 
             this.Bus = new Bus();
-            this.Bus.consoleXY = new Point(25, 0);
+            this.Bus.ConsoleXY = new Point(25, 0);
 
             this.A = new Register(SystemRegister.A, this.Clock, this.Bus, this.ControlUnit);
-            this.A.consoleXY = new Point(rightPrint, 1 * moduleHeight);
+            this.A.ConsoleXY = new Point(rightPrint, 1 * moduleHeight);
 
             this.B = new Register(SystemRegister.B, this.Clock, this.Bus, this.ControlUnit);
-            this.B.consoleXY = new Point(rightPrint, 3 * moduleHeight);
+            this.B.ConsoleXY = new Point(rightPrint, 3 * moduleHeight);
 
             this.Mar = new Register(SystemRegister.MAR, this.Clock, this.Bus, this.ControlUnit);
-            this.Mar.consoleXY = new Point(leftPrint, 1 * moduleHeight);
+            this.Mar.ConsoleXY = new Point(leftPrint, 1 * moduleHeight);
 
             this.Ir = new Register(SystemRegister.IR, this.Clock, this.Bus, this.ControlUnit);
-            this.Ir.consoleXY = new Point(leftPrint, 4 * moduleHeight);
+            this.Ir.ConsoleXY = new Point(leftPrint, 4 * moduleHeight);
 
             this.IrParam = new Register(SystemRegister.IR_PARAM, this.Clock, this.Bus, this.ControlUnit);
-            this.IrParam.consoleXY = new Point(leftPrint, 5 * moduleHeight);
+            this.IrParam.ConsoleXY = new Point(leftPrint, 5 * moduleHeight);
 
             this.Out = new Register(SystemRegister.OUT, this.Clock, this.Bus, this.ControlUnit);
-            this.Out.consoleXY = new Point(rightPrint, 5 * moduleHeight);
+            this.Out.ConsoleXY = new Point(rightPrint, 5 * moduleHeight);
 
             this.ProgramCounter = new ProgramCounter(this.Clock, this.Bus, this.ControlUnit);
-            this.ProgramCounter.consoleXY = new Point(rightPrint, 0);
+            this.ProgramCounter.ConsoleXY = new Point(rightPrint, 0);
 
             this.Alu = new Alu(this.ControlUnit, this.Bus, this.A, this.B);
-            this.Alu.consoleXY = new Point(rightPrint, 2 * moduleHeight);
+            this.Alu.ConsoleXY = new Point(rightPrint, 2 * moduleHeight);
 
             this.Flags = new FlagsRegister4Bit(SystemRegister.FLAGS, this.Clock, this.ControlUnit, this.Alu);
-            this.Flags.consoleXY = new Point(rightPrint, 4 * moduleHeight);
+            this.Flags.ConsoleXY = new Point(rightPrint, 4 * moduleHeight);
 
             this.MicrostepCounter = new MicrostepCounter(this.Clock, this.ControlUnit);
 
@@ -76,10 +76,10 @@ namespace Simulator
             ControlUnit.MicrostepCounter = this.MicrostepCounter;
          
             this.Rom = new Rom(this.Bus, this.ControlUnit, this.Mar);
-            this.Rom.consoleXY = new Point(leftPrint, 2 * moduleHeight);            
+            this.Rom.ConsoleXY = new Point(leftPrint, 2 * moduleHeight);            
 
             this.Ram = new Ram(this.Bus, this.ControlUnit, this.Mar);
-            this.Ram.consoleXY = new Point(leftPrint, 3 * moduleHeight);
+            this.Ram.ConsoleXY = new Point(leftPrint, 3 * moduleHeight);
         }
 
 
@@ -123,14 +123,15 @@ namespace Simulator
                 Flags.OutputState();
                 Out.OutputState();
 
-
                 // Control Unit (bottom)
                 ControlUnit.OutputState();
 
+                // User keys
                 Console.SetCursorPosition(0, 23);
                 Console.Write(String.Format("[S]tep - [N]ext Instruction - [R]un - Clock {0}hz [+-] - Rese[t] - E[x]it", this.Clock.FrequencyHz));
 
 
+                // Step the system
                 if ( this.Clock.ClockMode == IClock.Mode.Stepped ||
                     (this.Clock.ClockMode == IClock.Mode.Running && Console.KeyAvailable) )
                 {
@@ -164,7 +165,7 @@ namespace Simulator
                             if (freq <= 20) freq++;
                             else if (freq <= 100) freq += 5;
                             else freq += 50;
-                            if (freq > 1000) freq = 1000;
+                            if (freq > 500) freq = 500;
                             this.Clock.FrequencyHz = freq;
                             break;
 
@@ -200,7 +201,14 @@ namespace Simulator
 
                 if (this.Clock.ClockMode == IClock.Mode.Running)
                 {
-                    Thread.Sleep(1000 / this.Clock.FrequencyHz);
+                    if(Clock.IsHalted)
+                    {
+                        Thread.Sleep(1000);
+                    }
+                    else
+                    {
+                        Thread.Sleep(1000 / this.Clock.FrequencyHz);
+                    }                    
                     this.Clock.Step();
                 }
             }

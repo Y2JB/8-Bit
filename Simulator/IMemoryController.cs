@@ -11,7 +11,7 @@ namespace Simulator
         byte Read();
         void Write(byte value);
 
-        Point consoleXY { get; set; }
+        Point ConsoleXY { get; set; }
         void OutputState();
     }
 

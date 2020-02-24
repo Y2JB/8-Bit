@@ -8,19 +8,16 @@ namespace asm
         
         static void Main(string[] args)
         {
-            string fn = "/Users/jonbellamy/Projects/8-Bit/Sample ASM/test.asm";
-            //string fn = "C:/Users/bellamj/source/repos/JonBellamy/8-Bit/Sample ASM/test.asm";
-
+            string asmFile = "../../../../Sample ASM/test.asm";
+            string romFile = "../../../../Sample ASM/test.rom";
 
             bool optionOutputPreProcessedSource = true;
             bool outputRomBinaryToConsole = true;
 
             Assembler asm = new Assembler();
-            asm.Assemble(fn, "fib.rom", optionOutputPreProcessedSource, outputRomBinaryToConsole);
+            asm.Assemble(asmFile, romFile, optionOutputPreProcessedSource, outputRomBinaryToConsole);
 
-            Console.WriteLine("done");
-
-            
+            Console.WriteLine("done");            
         }
     }
 }

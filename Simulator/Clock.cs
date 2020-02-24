@@ -12,15 +12,15 @@ namespace Simulator
         
         public Mode ClockMode { get; set; }
 
-        public Point consoleXY { get; set; }
+        public Point ConsoleXY { get; set; }
         public int FrequencyHz { get; set; }      
-        public bool IsHalted { get { return hltLine.State;  } }
+        public bool IsHalted { get { return HltLine.State;  } }
 
-        ControlLine hltLine { get; set; }
+        ControlLine HltLine { get; set; }
         int cycleCount;
         
 
-        public List<IClockConnectedComponent> clockConnectedComponents { get; private set; }
+        public List<IClockConnectedComponent> ClockConnectedComponents { get; private set; }
 
         public Clock(IControlUnit controlUnit)
         {
@@ -28,26 +28,26 @@ namespace Simulator
             FrequencyHz = 1;
             ClockMode = Mode.Stepped;
 
-            clockConnectedComponents = new List<IClockConnectedComponent>();
+            ClockConnectedComponents = new List<IClockConnectedComponent>();
 
-            hltLine = controlUnit.GetControlLine(ControlLineId.HLT);
+            HltLine = controlUnit.GetControlLine(ControlLineId.HLT);
         }
 
         public void Step()
         {
-            if(hltLine.State == true)
+            if(HltLine.State == true)
             {
                 return;
             }
 
             cycleCount++;
 
-            foreach(IClockConnectedComponent component in clockConnectedComponents)
+            foreach(IClockConnectedComponent component in ClockConnectedComponents)
             {
                 component.OnRisingEdge();
             }
 
-            foreach (IClockConnectedComponent component in clockConnectedComponents)
+            foreach (IClockConnectedComponent component in ClockConnectedComponents)
             {
                 component.OnFallingEdge();
             }
@@ -57,13 +57,13 @@ namespace Simulator
 
         public void OutputState()
         {
-            Console.SetCursorPosition(consoleXY.X, consoleXY.Y);
+            Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y);
             Console.Write("|-----------------------|");
-            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
+            Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y + 1);
             Console.Write("|                       |");
-            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
+            Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y + 1);
             Console.Write(String.Format("|Clock - Cycle: {0}", cycleCount));
-            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 2);
+            Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y + 2);
             Console.Write("|-----------------------|");
         }
 

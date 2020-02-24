@@ -22,7 +22,4 @@ CMP 0x0C
 JNE loop:
 
 
-// TODO: Output the first 14 entires of the Fibonacci Sequence
-
-
 HLT

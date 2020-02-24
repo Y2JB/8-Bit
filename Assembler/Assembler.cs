@@ -110,7 +110,7 @@ namespace asm
             // First section of the ROM stores our 4 bit instruction and 4 bit left parameter
             foreach (var statement in Program)
             {
-                byte op = statement.instruction.Value;
+                byte op = statement.Instruction.Value;
                 byte lp = statement.LeftParam.Value;
                 byte opcodeAndLParam = (byte)((op << 3) | lp);
                 memStream.WriteByte(opcodeAndLParam);

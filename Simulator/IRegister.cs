@@ -9,7 +9,7 @@ namespace Simulator
         string BinarytValue { get; } 
         bool GetBit(int bit);
         void Reset();
-        Point consoleXY { get; set; }
+        Point ConsoleXY { get; set; }
         void OutputState();
     }
 }

@@ -21,7 +21,7 @@ namespace Simulator
 
         public byte Value { get { return Read(); } }
 
-        public Point consoleXY { get; set; }
+        public Point ConsoleXY { get; set; }
 
 
         public Rom(IBus bus, IControlUnit controlUnit, IRegister mar)
@@ -62,7 +62,7 @@ namespace Simulator
             int address = (int) mar.Value;
             if(romBank1Line.State)
             {
-                address = address | 0x100;
+                address |= 0x100;
             }
             byte value = mem[address];
             return value;
@@ -83,13 +83,13 @@ namespace Simulator
                 Console.ForegroundColor = ConsoleColor.Red;
             }
 
-            Console.SetCursorPosition(consoleXY.X, consoleXY.Y);
+            Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y);
             Console.Write("|-----------------------|");
-            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
+            Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y + 1);
             Console.Write("|                       |");
-            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
+            Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y + 1);
             Console.Write(String.Format("|ROM: 0x{0:X2}", Value));
-            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 2);
+            Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y + 2);
             Console.Write("|-----------------------|");
         }
     }

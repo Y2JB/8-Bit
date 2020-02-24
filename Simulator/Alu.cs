@@ -21,7 +21,7 @@ namespace Simulator
         ControlLine busOutputLine;
         ControlLine subLine;
 
-        public Point consoleXY { get; set; }
+        public Point ConsoleXY { get; set; }
 
         public byte Value
         {
@@ -89,15 +89,15 @@ namespace Simulator
                 Console.ForegroundColor = ConsoleColor.Red;
             }
 
-            Console.SetCursorPosition(consoleXY.X, consoleXY.Y);
+            Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y);
             Console.Write("|-----------------------|");
-            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
+            Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y + 1);
             Console.Write("|                       |");
-            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
+            Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y + 1);
             Console.Write(String.Format("|ALU: 0x{0:X2} ", Value));
             if (Zero) Console.Write("Z");
             if (Carry) Console.Write("C");
-            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 2);
+            Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y + 2);
             Console.Write("|-----------------------|");
         }
     }

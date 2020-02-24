@@ -17,7 +17,7 @@ namespace Simulator
 
         void OnControlStateUpdated();
 
-        Point consoleXY { get; set; }
+        Point ConsoleXY { get; set; }
         void OutputState();
     }
 

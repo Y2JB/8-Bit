@@ -10,7 +10,7 @@ namespace Simulator
         byte MaxValue { get; }
         byte Value { get; }
         void Reset();
-        Point consoleXY { get; set; }
+        Point ConsoleXY { get; set; }
         void OutputState();
     }
 

@@ -10,7 +10,7 @@ namespace Simulator
         bool Carry { get; }
         bool Zero { get; }
 
-        Point consoleXY { get; set; }
+        Point ConsoleXY { get; set; }
         void OutputState();
     }
 

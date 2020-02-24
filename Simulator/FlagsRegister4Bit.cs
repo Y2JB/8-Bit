@@ -13,7 +13,7 @@ namespace Simulator
 
         public byte Value { get; private set; }
 
-        public Point consoleXY { get; set; }
+        public Point ConsoleXY { get; set; }
         
         public string BinarytValue { get { return Convert.ToString(Value, 2).PadLeft(4, '0'); } }
 
@@ -32,7 +32,7 @@ namespace Simulator
 
             this.alu = alu;
 
-            clock.clockConnectedComponents.Add(this);
+            clock.ClockConnectedComponents.Add(this);
 
             updateFlagsLine = controlUnit.GetControlLine(ControlLineId.UPDATE_FLAGS);
         }
@@ -84,11 +84,11 @@ namespace Simulator
         public void OutputState()
         {
             Console.ForegroundColor = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? ConsoleColor.Black : ConsoleColor.White;
-            Console.SetCursorPosition(consoleXY.X, consoleXY.Y);
+            Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y);
             Console.Write("|-----------------------|");
-            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
+            Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y + 1);
             Console.Write("|                       |");
-            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
+            Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y + 1);
             Console.Write(String.Format("|{0} - 0x{1:X2}", id.ToString(), Value));
 
             // Yes this should be done with inheritence...
@@ -98,7 +98,7 @@ namespace Simulator
                 GeneralPurposeRegisterId reg = (GeneralPurposeRegisterId)(Value & 0x07);
                 Console.Write(String.Format(" {0} {1}",opCode.ToString(), reg.ToString()));
             }
-            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 2);
+            Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y + 2);
             Console.Write("|-----------------------|");
         }
 
