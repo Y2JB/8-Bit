@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Runtime.InteropServices;
 using EightBitSystem;
 
 namespace Simulator
@@ -82,7 +83,7 @@ namespace Simulator
 
         public void OutputState()
         {
-            Console.ForegroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? ConsoleColor.Black : ConsoleColor.White;
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y);
             Console.Write("|---------------------------------------------------------------------|");
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);

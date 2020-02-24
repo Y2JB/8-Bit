@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using EightBitSystem;
 
 namespace Simulator
@@ -84,7 +85,7 @@ namespace Simulator
 
         public void OutputState()
         {
-            Console.ForegroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? ConsoleColor.Black : ConsoleColor.White;
             if (Bus.Driver == this)
             {
                 Console.ForegroundColor = ConsoleColor.Red;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Runtime.InteropServices;
 
 namespace Simulator
 {
@@ -37,7 +38,7 @@ namespace Simulator
 
         public void OutputState()
         {
-            Console.ForegroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? ConsoleColor.Black : ConsoleColor.White;
 
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y);
             Console.Write(String.Format("     BUS - Value: {0}   ", Driver == null ? 0 : Driver.Value));
@@ -52,7 +53,7 @@ namespace Simulator
             {
                 Console.ForegroundColor = ConsoleColor.Red;
             }
-            for (int i=2; i < Console.WindowHeight - 6; i++)
+            for (int i=2; i < 18; i++)
             {
                 Console.SetCursorPosition(consoleXY.X, consoleXY.Y + i);
                 Console.Write("  |  |  |  |  |  |  |  |");

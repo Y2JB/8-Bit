@@ -30,7 +30,7 @@ namespace Simulator
         public EightBitSystem()
         {
             int leftPrint = 0;
-            int rightPrint = Console.WindowWidth - 29;
+            int rightPrint = 51;
             //Console.WindowHeight = 40;
             int moduleHeight = 3;
 
