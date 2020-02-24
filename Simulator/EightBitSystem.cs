@@ -31,12 +31,10 @@ namespace Simulator
         {
             int leftPrint = 0;
             int rightPrint = 51;
-            //Console.WindowHeight = 40;
             int moduleHeight = 3;
 
             this.ControlUnit = new ControlUnit();
             this.ControlUnit.consoleXY = new Point(leftPrint, 6 * moduleHeight);
-
 
             this.Clock = new Clock(this.ControlUnit);
             this.Clock.consoleXY = new Point(leftPrint, 0);
@@ -73,21 +71,33 @@ namespace Simulator
 
             this.MicrostepCounter = new MicrostepCounter(this.Clock, this.ControlUnit);
 
-            // load the microcode images
-            ControlUnit.LoadMicrocode();
             ControlUnit.InstructionRegister = this.Ir;
             ControlUnit.FlagsRegister = this.Flags;
             ControlUnit.MicrostepCounter = this.MicrostepCounter;
          
-            string romFile = "../../../../Sample ASM/test.rom";
-            MemoryStream romContents = new MemoryStream(File.ReadAllBytes(romFile));
             this.Rom = new Rom(this.Bus, this.ControlUnit, this.Mar);
-            this.Rom.consoleXY = new Point(leftPrint, 2 * moduleHeight);
-            this.Rom.Load(romContents);
+            this.Rom.consoleXY = new Point(leftPrint, 2 * moduleHeight);            
 
             this.Ram = new Ram(this.Bus, this.ControlUnit, this.Mar);
             this.Ram.consoleXY = new Point(leftPrint, 3 * moduleHeight);
+        }
 
+
+        public void LoadMicrocode(string bank0RomFile, string bank1RomFile, string bank2RomFile)
+        {
+            ControlUnit.LoadMicrocode(bank0RomFile, bank1RomFile, bank2RomFile);
+        }
+
+
+        public void LoadProgram(string romFile)
+        {
+            MemoryStream romContents = new MemoryStream(File.ReadAllBytes(romFile));
+            this.Rom.Load(romContents);
+        }
+
+
+        public void PowerOn()
+        {
             // Start the computer with the control until poiting at the first control word
             this.ControlUnit.OnControlStateUpdated();
 
@@ -118,11 +128,11 @@ namespace Simulator
                 ControlUnit.OutputState();
 
                 Console.SetCursorPosition(0, 23);
-                Console.Write(String.Format("[S]tep - [R]un - [N]ext Asm Instruction - Clock Freq {0}hz [+-] - E[x]it", this.Clock.FrequencyHz));
+                Console.Write(String.Format("[S]tep - [N]ext Asm Instruction - [R]un - Clock Freq {0}hz [+-] - Rese[t] - E[x]it", this.Clock.FrequencyHz));
 
 
-                if (this.Clock.ClockMode == IClock.Mode.Stepped ||
-                    (this.Clock.ClockMode == IClock.Mode.Running && Console.KeyAvailable))
+                if ( this.Clock.ClockMode == IClock.Mode.Stepped ||
+                    (this.Clock.ClockMode == IClock.Mode.Running && Console.KeyAvailable) )
                 {
                     key = Console.ReadKey(true);
 
@@ -131,24 +141,16 @@ namespace Simulator
                     switch (key.Key)
                     {
                         case ConsoleKey.S:
-                            if (this.Clock.ClockMode == IClock.Mode.Stepped)
-                            {
-                                this.Clock.Step();
-                            }
-                            else
-                            {
-                                this.Clock.ClockMode = IClock.Mode.Stepped;
-                            }
+                            this.Clock.ClockMode = IClock.Mode.Stepped;
+                            this.Clock.Step();
                             break;
 
                         case ConsoleKey.R:
-                            if (this.Clock.ClockMode != IClock.Mode.Running)                            
-                            {
-                                this.Clock.ClockMode = IClock.Mode.Running;
-                            }
+                            this.Clock.ClockMode = IClock.Mode.Running;
                             break;
 
                         case ConsoleKey.N:
+                            this.Clock.ClockMode = IClock.Mode.Stepped;
                             this.Clock.Step();
                             while (this.ControlUnit.MicrostepCounter.Value != 3 && !this.Clock.IsHalted)
                             {
@@ -175,6 +177,9 @@ namespace Simulator
                             this.Clock.FrequencyHz = freq;
                             break;
 
+                        case ConsoleKey.T:
+                            Reset();
+                            break;
 
                         case ConsoleKey.X:
                             return;
@@ -201,16 +206,19 @@ namespace Simulator
             }
         }
 
-            
-
-        public void LoadProgram(string romFile)
-        {
-
-        }
 
         public void Reset()
         {
+            this.A.Reset();
+            this.B.Reset();
+            this.Mar.Reset();
+            this.Ir.Reset();
+            this.IrParam.Reset();
+            this.Out.Reset();
+            this.ProgramCounter.Reset();
+            this.MicrostepCounter.Reset();
 
+            this.ControlUnit.OnControlStateUpdated();
         }
 
     }

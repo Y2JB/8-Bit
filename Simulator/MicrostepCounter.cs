@@ -54,7 +54,6 @@ namespace Simulator
 
         public void OutputState()
         {
-
         }
     }
 

@@ -53,7 +53,15 @@ namespace Simulator
             this.bReg = bReg;
 
             busOutputLine = controlUnit.GetControlLine(ControlLineId.SUM_OUT);
+            
             subLine = controlUnit.GetControlLine(ControlLineId.SUBTRACT);
+            subLine.onTransition = () =>
+            {
+                // When the sub line changes, pull the value to refresh it, and the flags
+                byte val = Value;
+                return true;
+            };
+
 
             busOutputLine.onTransition = () =>
             {
@@ -86,7 +94,7 @@ namespace Simulator
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
             Console.Write("|                       |");
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
-            Console.Write(String.Format("|ALU - 0x{0:X2} ", Value));
+            Console.Write(String.Format("|ALU: 0x{0:X2} ", Value));
             if (Zero) Console.Write("Z");
             if (Carry) Console.Write("C");
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 2);

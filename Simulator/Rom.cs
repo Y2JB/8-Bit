@@ -88,7 +88,7 @@ namespace Simulator
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
             Console.Write("|                       |");
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
-            Console.Write(String.Format("|ROM - 0x{0:X2}", Value));
+            Console.Write(String.Format("|ROM: 0x{0:X2}", Value));
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 2);
             Console.Write("|-----------------------|");
         }

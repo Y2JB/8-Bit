@@ -41,7 +41,7 @@ namespace Simulator
             Console.ForegroundColor = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? ConsoleColor.Black : ConsoleColor.White;
 
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y);
-            Console.Write(String.Format("     BUS - Value: {0}   ", Driver == null ? 0 : Driver.Value));
+            Console.Write(String.Format("     BUS - Value: 0x{0:X2}   ", Driver == null ? 0 : Driver.Value));
 
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
             Console.Write("                      ");
@@ -49,14 +49,22 @@ namespace Simulator
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
             Console.Write(String.Format("     Driver: {0}  ", Driver == null ? "null" : Driver.Name));
 
-            if (Driver != null)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-            }
-            for (int i=2; i < 18; i++)
+            Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 2);
+            Console.Write(String.Format("7  6  5  4  3  2  1  0", Driver == null ? "null" : Driver.Name));
+
+            for (int i=3; i < 17; i++)
             {
                 Console.SetCursorPosition(consoleXY.X, consoleXY.Y + i);
-                Console.Write("  |  |  |  |  |  |  |  |");
+                for (int bit = 7; bit >= 0; bit--)
+                {
+                    Console.ForegroundColor = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? ConsoleColor.Black : ConsoleColor.White;
+                    // Draw active lines in red
+                    if (Driver != null && GetBit(bit))
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                    }
+                    Console.Write("|  ");
+                }
             }
         }
     }

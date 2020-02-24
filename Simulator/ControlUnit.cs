@@ -27,7 +27,7 @@ namespace Simulator
         }
 
 
-        public void LoadMicrocode()
+        public void LoadMicrocode(string bank0RomFile, string bank1RomFile, string bank2RomFile)
         {
             microcodeEeprom0 = new MemoryStream(File.ReadAllBytes("../../../../Sample Microcode/Microcode-Bank0.bin")).ToArray();
             microcodeEeprom1 = new MemoryStream(File.ReadAllBytes("../../../../Sample Microcode/Microcode-Bank1.bin")).ToArray();
@@ -87,7 +87,7 @@ namespace Simulator
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y);
             Console.Write("|---------------------------------------------------------------------|");
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
-            Console.Write(String.Format("MicroStep - {0}", MicrostepCounter.Value));
+            Console.Write(String.Format("MicroStep: {0}", MicrostepCounter.Value));
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 2);
             Console.Write("                                                                       ");
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 2);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using EightBitSystem;
 
 namespace Simulator
@@ -52,6 +53,7 @@ namespace Simulator
         public void Reset()
         {
             Value = 0;
+            controlUnit.OnControlStateUpdated();
         }
 
 
@@ -69,10 +71,7 @@ namespace Simulator
                 Value = val;
 
                 // The flags being updated should be immedietley refelected by the control unit
-                if (id == SystemRegister.FLAGS)
-                {
-                    controlUnit.OnControlStateUpdated();
-                }
+                controlUnit.OnControlStateUpdated();
             }
         }
 
@@ -84,6 +83,7 @@ namespace Simulator
 
         public void OutputState()
         {
+            Console.ForegroundColor = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? ConsoleColor.Black : ConsoleColor.White;
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y);
             Console.Write("|-----------------------|");
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);

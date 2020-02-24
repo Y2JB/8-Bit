@@ -13,7 +13,7 @@ namespace Simulator
         IRegister FlagsRegister { get; set; }
         ICounter MicrostepCounter { get; set; }
         ControlLine GetControlLine(ControlLineId lineId);
-        void LoadMicrocode();
+        void LoadMicrocode(string bank0RomFile, string bank1RomFile, string bank2RomFile);
 
         void OnControlStateUpdated();
 

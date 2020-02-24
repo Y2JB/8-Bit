@@ -62,7 +62,7 @@ namespace Simulator
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
             Console.Write("|                       |");
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
-            Console.Write(String.Format("|Clock. Cycle - {0}", cycleCount));
+            Console.Write(String.Format("|Clock - Cycle: {0}", cycleCount));
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 2);
             Console.Write("|-----------------------|");
         }

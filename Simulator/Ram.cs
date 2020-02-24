@@ -91,7 +91,7 @@ namespace Simulator
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
             Console.Write("|                       |");
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
-            Console.Write(String.Format("|RAM - 0x{0:X2}", Value));
+            Console.Write(String.Format("|RAM: 0x{0:X2}", Value));
             Console.SetCursorPosition(consoleXY.X+25, consoleXY.Y + 1);
             Console.Write("|");
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 2);

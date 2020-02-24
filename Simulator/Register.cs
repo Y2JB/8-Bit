@@ -107,6 +107,11 @@ namespace Simulator
         {
             Value = 0;
 
+            if (Bus.Driver == this)
+            {
+                Bus.Driver = null;
+            }
+
             // The IR being updated should be immedietley refelected by the control unit
             if (id == SystemRegister.IR)
             {
@@ -157,7 +162,7 @@ namespace Simulator
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
             Console.Write("|                       |");
             Console.SetCursorPosition(consoleXY.X, consoleXY.Y + 1);
-            Console.Write(String.Format("|{0} - 0x{1:X2}", id.ToString(), Value));
+            Console.Write(String.Format("|{0}: 0x{1:X2}", id.ToString(), Value));
 
             // Yes this should be done with inheritence...
             if (id == SystemRegister.IR)

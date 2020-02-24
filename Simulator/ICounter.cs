@@ -9,7 +9,7 @@ namespace Simulator
         bool CountEnabled { get; }
         byte MaxValue { get; }
         byte Value { get; }
-
+        void Reset();
         Point consoleXY { get; set; }
         void OutputState();
     }
