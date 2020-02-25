@@ -45,7 +45,7 @@ namespace Simulator
             }
         }
 
-        public Alu(IControlUnit controlUnit, IBus bus, IRegister aReg, IRegister bReg)
+        public Alu(IBus bus, IControlUnit controlUnit, IRegister aReg, IRegister bReg)
         {
             Bus = bus;
 

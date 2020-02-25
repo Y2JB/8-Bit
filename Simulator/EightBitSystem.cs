@@ -63,7 +63,7 @@ namespace Simulator
             this.ProgramCounter = new ProgramCounter(this.Clock, this.Bus, this.ControlUnit);
             this.ProgramCounter.ConsoleXY = new Point(rightPrint, 0);
 
-            this.Alu = new Alu(this.ControlUnit, this.Bus, this.A, this.B);
+            this.Alu = new Alu(this.Bus, this.ControlUnit, this.A, this.B);
             this.Alu.ConsoleXY = new Point(rightPrint, 2 * moduleHeight);
 
             this.Flags = new FlagsRegister4Bit(SystemRegister.FLAGS, this.Clock, this.ControlUnit, this.Alu);
