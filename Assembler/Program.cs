@@ -8,8 +8,8 @@ namespace asm
         
         static void Main(string[] args)
         {
-            string asmFile = "../../../../Sample ASM/test.asm";
-            string romFile = "../../../../Sample ASM/test.rom";
+            string asmFile = "../../../../Simulator.IntegrationTest/Tests/CountToTen/test.asm";
+            string romFile = "../../../../Simulator.IntegrationTest/Tests/CountToTen/test.rom";
 
             bool optionOutputPreProcessedSource = true;
             bool outputRomBinaryToConsole = true;

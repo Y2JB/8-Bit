@@ -11,21 +11,21 @@ namespace Simulator
 
     public class EightBitSystem
     {
-        IClock Clock { get; set; }
-        IAlu Alu { get; set; }
-        IRegister A { get; set; }
-        IRegister B { get; set; }        
-        IRegister Out { get; set; }
-        IRegister Ir { get; set; }
-        IRegister IrParam { get; set; }        
-        IRegister Mar { get; set; }
-        IRegister Flags { get; set; }
-        Ram Ram { get; set; }
-        Rom Rom { get; set; }
-        IControlUnit ControlUnit { get; set; }
-        ICounter ProgramCounter { get; set; }
-        ICounter MicrostepCounter { get; set; }
-        IBus Bus { get; set; }
+        public IClock Clock { get; set; }
+        public IAlu Alu { get; set; }
+        public IRegister A { get; set; }
+        public IRegister B { get; set; }
+        public IRegister Out { get; set; }
+        public IRegister Ir { get; set; }
+        public IRegister IrParam { get; set; }
+        public IRegister Mar { get; set; }
+        public IRegister Flags { get; set; }
+        public Ram Ram { get; set; }
+        public Rom Rom { get; set; }
+        public IControlUnit ControlUnit { get; set; }
+        public ICounter ProgramCounter { get; set; }
+        public ICounter MicrostepCounter { get; set; }
+        public IBus Bus { get; set; }
 
         public EightBitSystem()
         {

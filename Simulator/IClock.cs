@@ -15,6 +15,7 @@ namespace Simulator
         Mode ClockMode { get; set; }
         bool IsHalted { get; }
         int FrequencyHz { get; set; }
+        int CycleCount { get; }
 
         void Step();
 

@@ -11,13 +11,13 @@ namespace Simulator
     {
         
         public Mode ClockMode { get; set; }
-
         public Point ConsoleXY { get; set; }
         public int FrequencyHz { get; set; }      
         public bool IsHalted { get { return HltLine.State;  } }
+        public int CycleCount { get; private set; }
 
         ControlLine HltLine { get; set; }
-        int cycleCount;
+        
 
         List<IClockConnectedComponent> clockConnectedComponents;
 
@@ -46,7 +46,7 @@ namespace Simulator
                 return;
             }
 
-            cycleCount++;
+            CycleCount++;
 
             foreach(IClockConnectedComponent component in clockConnectedComponents)
             {
@@ -68,7 +68,7 @@ namespace Simulator
             Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y + 1);
             Console.Write("|                       |");
             Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y + 1);
-            Console.Write(String.Format("|Clock - Cycle: {0}", cycleCount));
+            Console.Write(String.Format("|Clock - Cycle: {0}", CycleCount));
             Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y + 2);
             Console.Write("|-----------------------|");
         }

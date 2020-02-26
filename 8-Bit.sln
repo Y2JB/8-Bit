@@ -10,7 +10,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Assembler", "Assembler\Asse
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "8BitShared", "8BitShared\8BitShared.shproj", "{AF0D00E6-5810-4900-8B30-94F42DEF8A47}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simulator.Test", "Simulator.Test\Simulator.Test.csproj", "{91AED39B-11A9-411D-8E1B-F4ED58CDCA63}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Simulator.Test", "Simulator.Test\Simulator.Test.csproj", "{91AED39B-11A9-411D-8E1B-F4ED58CDCA63}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simulator.IntegrationTest", "Simulator.IntegrationTest\Simulator.IntegrationTest.csproj", "{849E7033-B2B0-4324-BD97-7A7DDE17DF4A}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -37,6 +39,10 @@ Global
 		{91AED39B-11A9-411D-8E1B-F4ED58CDCA63}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91AED39B-11A9-411D-8E1B-F4ED58CDCA63}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91AED39B-11A9-411D-8E1B-F4ED58CDCA63}.Release|Any CPU.Build.0 = Release|Any CPU
+		{849E7033-B2B0-4324-BD97-7A7DDE17DF4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{849E7033-B2B0-4324-BD97-7A7DDE17DF4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{849E7033-B2B0-4324-BD97-7A7DDE17DF4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{849E7033-B2B0-4324-BD97-7A7DDE17DF4A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
