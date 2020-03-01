@@ -85,7 +85,8 @@ namespace Simulator
 
         public void OutputState()
         {
-            Console.ForegroundColor = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? ConsoleColor.Black : ConsoleColor.White;
+            ConsoleColor defaultColour = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? ConsoleColor.Black : ConsoleColor.White;
+            Console.ForegroundColor = defaultColour;
             Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y);
             Console.Write("|--------------------------------------------------------------------------|");
             Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y + 1);
@@ -103,6 +104,16 @@ namespace Simulator
                 }
             }
             Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y + 3);
+            Console.Write("|                                                                          |");
+            Console.SetCursorPosition(ConsoleXY.X + 1, ConsoleXY.Y + 3);
+            foreach (var line in controlLines) 
+            {
+                Console.ForegroundColor = line.Value.State ? ConsoleColor.Red : defaultColour;
+                Console.Write("X ");
+
+            }
+            Console.ForegroundColor = defaultColour;
+            Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y + 4);
             Console.Write("|--------------------------------------------------------------------------|");
 
         }

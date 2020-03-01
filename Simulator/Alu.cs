@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Runtime.InteropServices;
 using EightBitSystem;
+using static Simulator.IDisplayComponent;
 
 namespace Simulator
 {
@@ -44,6 +45,8 @@ namespace Simulator
                 return (byte) val;  
             }
         }
+        public string BinaryValue { get { return Convert.ToString(Value, 2).PadLeft(8, '0'); } }
+
 
         public Alu(IBus bus, IControlUnit controlUnit, IRegister aReg, IRegister bReg)
         {
@@ -81,7 +84,7 @@ namespace Simulator
         }
 
 
-        public void OutputState()
+        public void OutputState(ValueFormat format)
         {
             Console.ForegroundColor = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? ConsoleColor.Black : ConsoleColor.White;
             if (Bus.Driver == this)
@@ -94,7 +97,22 @@ namespace Simulator
             Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y + 1);
             Console.Write("|                       |");
             Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y + 1);
-            Console.Write(String.Format("|ALU: 0x{0:X2} ", Value));
+
+            switch(format)
+            {
+                case ValueFormat.Hex:
+                Console.Write(String.Format("|ALU: 0x{0:X2} ", Value));
+                break;
+
+                case ValueFormat.Decimal:
+                Console.Write(String.Format("|ALU: {0} ", Value));
+                break;
+
+                case ValueFormat.Binary:
+                Console.Write(String.Format("|ALU: {0} ", BinaryValue));
+                break;
+            }
+
             if (Zero) Console.Write("Z");
             if (Carry) Console.Write("C");
             Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y + 2);

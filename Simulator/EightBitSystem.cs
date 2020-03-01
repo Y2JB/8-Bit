@@ -3,6 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.Threading;
 using EightBitSystem;
+using static Simulator.IDisplayComponent;
 
 namespace Simulator
 {
@@ -102,33 +103,35 @@ namespace Simulator
             this.ControlUnit.OnControlStateUpdated();
 
             ConsoleKeyInfo key;
+            ValueFormat displayFormat = ValueFormat.Binary;
+
             while (true)
             {
                 // Left modules
                 this.Clock.OutputState();
-                Mar.OutputState();
-                Ram.OutputState();
-                Rom.OutputState();
-                Ir.OutputState();
-                IrParam.OutputState();
+                Mar.OutputState(displayFormat);
+                Ram.OutputState(displayFormat);
+                Rom.OutputState(displayFormat);
+                Ir.OutputState(displayFormat);
+                IrParam.OutputState(displayFormat);
 
                 // BUS
                 this.Bus.OutputState();
 
                 // Right modules
-                ProgramCounter.OutputState();
-                A.OutputState();
-                Alu.OutputState();
-                B.OutputState();
-                Flags.OutputState();
-                Out.OutputState();
+                ProgramCounter.OutputState(displayFormat);
+                A.OutputState(displayFormat);
+                Alu.OutputState(displayFormat);
+                B.OutputState(displayFormat);
+                Flags.OutputState(displayFormat);
+                Out.OutputState(displayFormat);
 
                 // Control Unit (bottom)
                 ControlUnit.OutputState();
 
                 // User keys
                 Console.SetCursorPosition(0, 23);
-                Console.Write(String.Format("[S]tep - [N]ext Instruction - [R]un - Clock {0}hz [+-] - Rese[t] - E[x]it", this.Clock.FrequencyHz));
+                Console.Write(String.Format("[S]tep - [N]ext Ins - [R]un - Clock {0}hz [+-] - Rese[t] - [D]isplay - E[x]it", this.Clock.FrequencyHz));
 
 
                 // Step the system
@@ -180,6 +183,23 @@ namespace Simulator
 
                         case ConsoleKey.T:
                             Reset();
+                            break;
+
+                        case ConsoleKey.D:
+                            switch(displayFormat)
+                            {
+                                case ValueFormat.Hex:
+                                    displayFormat = ValueFormat.Decimal;
+                                    break;
+
+                                case ValueFormat.Decimal:
+                                    displayFormat = ValueFormat.Binary;
+                                    break;
+
+                                case ValueFormat.Binary:
+                                    displayFormat = ValueFormat.Hex;
+                                    break;
+                            }
                             break;
 
                         case ConsoleKey.X:

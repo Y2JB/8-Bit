@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Runtime.InteropServices;
 using EightBitSystem;
+using static Simulator.IDisplayComponent;
 
 namespace Simulator
 {
@@ -12,11 +13,10 @@ namespace Simulator
         public IBus Bus { get; private set; }
         public string Name { get { return id.ToString(); } }
 
-        public byte Value { get; private set; }
+        public byte Value { get; private set; }        
+        public string BinaryValue { get { return Convert.ToString(Value, 2).PadLeft(8, '0'); } }
 
         public Point ConsoleXY { get; set; }
-        
-        public string BinarytValue { get { return Convert.ToString(Value, 2).PadLeft(8, '0'); } }
 
         ControlLine busOutputLine;
         ControlLine busInputLine;
@@ -146,7 +146,7 @@ namespace Simulator
         }
 
 
-        public void OutputState()
+        public void OutputState(ValueFormat format)
         {
             Console.ForegroundColor = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? ConsoleColor.Black : ConsoleColor.White;
             if (Bus.Driver == this)
@@ -162,7 +162,21 @@ namespace Simulator
             Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y + 1);
             Console.Write("|                       |");
             Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y + 1);
-            Console.Write(String.Format("|{0}: 0x{1:X2}", id.ToString(), Value));
+
+            switch (format)
+            {
+                case ValueFormat.Hex:
+                    Console.Write(String.Format("|{0}: 0x{1:X2}", id.ToString(), Value));
+                    break;
+
+                case ValueFormat.Decimal:
+                    Console.Write(String.Format("|{0}: {1}", id.ToString(), Value));
+                    break;
+
+                case ValueFormat.Binary:
+                    Console.Write(String.Format("|{0}: {1}", id.ToString(), BinaryValue));
+                    break;
+            } 
 
             // Yes this should be done with inheritence...
             if (id == SystemRegister.IR)

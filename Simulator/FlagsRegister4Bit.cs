@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Runtime.InteropServices;
 using EightBitSystem;
+using static Simulator.IDisplayComponent;
 
 namespace Simulator
 {
@@ -11,17 +12,15 @@ namespace Simulator
 
         public string Name { get { return id.ToString(); } }
 
-        public byte Value { get; private set; }
-
-        public Point ConsoleXY { get; set; }
-        
-        public string BinarytValue { get { return Convert.ToString(Value, 2).PadLeft(4, '0'); } }
+        public byte Value { get; private set; }        
+        public string BinaryValue { get { return Convert.ToString(Value, 2).PadLeft(4, '0'); } }
 
         ControlLine updateFlagsLine;
-
         IControlUnit controlUnit;
-
         IAlu alu;
+
+        public Point ConsoleXY { get; set; }
+
 
         public FlagsRegister4Bit(SystemRegister id, IClock clock, IControlUnit controlUnit, IAlu alu)
         {
@@ -81,7 +80,7 @@ namespace Simulator
         }
 
 
-        public void OutputState()
+        public void OutputState(ValueFormat format)
         {
             Console.ForegroundColor = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? ConsoleColor.Black : ConsoleColor.White;
             Console.SetCursorPosition(ConsoleXY.X, ConsoleXY.Y);

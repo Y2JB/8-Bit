@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using EightBitSystem;
+using static Simulator.IDisplayComponent;
 
 namespace Simulator
 {
@@ -12,6 +13,7 @@ namespace Simulator
         public byte MaxValue { get { return 7; } }
 
         public byte Value { get; private set; }
+        public string BinaryValue { get { return Convert.ToString(Value, 2).PadLeft(3, '0'); } }
 
         public Point ConsoleXY { get; set; }
 
@@ -52,7 +54,7 @@ namespace Simulator
         }
 
 
-        public void OutputState()
+        public void OutputState(ValueFormat format)
         {
         }
     }
