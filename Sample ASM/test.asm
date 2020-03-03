@@ -1,5 +1,5 @@
 // Setup our data and our loop counters
-MOV A 0
+MOV A 1
 STR A 0x0A
 
 MOV B 0x05
