@@ -216,7 +216,7 @@ namespace MicrocodeGen
                 int step = GenerateFetchMicrocode(opCode, null, flags);
 
                 UInt16 address = GenerateMicroInstructionAddress(opCode, null, flags, step++);
-                UInt32 controlLines = (UInt32)(ControlLineId.UPDATE_FLAGS);
+                UInt32 controlLines = (UInt32)(ControlLineId.UPDATE_FLAGS) | (UInt32)(ControlLineId.SUM_OUT);
                 WriteEepromBuffers(address, controlLines);
 
                 address = GenerateMicroInstructionAddress(opCode, null, flags, step++);
@@ -235,7 +235,7 @@ namespace MicrocodeGen
                 int step = GenerateFetchMicrocode(opCode, null, flags);
 
                 UInt16 address = GenerateMicroInstructionAddress(opCode, null, flags, step++);
-                UInt32 controlLines = (UInt32)(ControlLineId.UPDATE_FLAGS) | (UInt32)(ControlLineId.SUBTRACT);
+                UInt32 controlLines = (UInt32)(ControlLineId.UPDATE_FLAGS) | (UInt32)(ControlLineId.SUM_OUT) | (UInt32)(ControlLineId.SUBTRACT);
                 WriteEepromBuffers(address, controlLines);
 
                 address = GenerateMicroInstructionAddress(opCode, null, flags, step++);
@@ -274,7 +274,7 @@ namespace MicrocodeGen
 
                 // Subtract the compare values, and use the zero flag as an equal flag
                 address = GenerateMicroInstructionAddress(opCode, null, flags, step++);
-                controlLines = (UInt32)(ControlLineId.SUBTRACT) | (UInt32)(ControlLineId.UPDATE_FLAGS);
+                controlLines = (UInt32)(ControlLineId.SUBTRACT) | (UInt32)(ControlLineId.SUM_OUT) | (UInt32)(ControlLineId.UPDATE_FLAGS);
                 WriteEepromBuffers(address, controlLines);
 
                 // Restore B
